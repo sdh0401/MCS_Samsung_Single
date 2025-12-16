@@ -387,6 +387,9 @@ UINT CWorkConveyor::StartWorkConveyor(LPVOID wParam)
                 SpeedTime = pThis->GetLowTime();
                 ThreadSleep(SpeedTime);
                 pThis->BeltOff(BELT_SPEED_LOW);
+                if (GetMaxBoardCount() == 1) {                    
+                    SetLoadable(false);
+                }
                 if (bLoop != false)
                 {
                     if (pThis->GetProdRunMode() == RUN_BYPASS)

@@ -213,7 +213,8 @@ UINT CEntryConveyor::StartEntryConveyor(LPVOID wParam)
                 else
                 {
                     pThis->SetPcbReady(false);
-                    pThis->PrevSmemaOut(Conv, SMEMA_NOT_BUSY);
+                    if (GetMaxBoardCount() == 0 || IsLoadable())
+                        pThis->PrevSmemaOut(Conv, SMEMA_NOT_BUSY);                    
                     pThis->NextSmemaOut(Conv, SMEMA_NOT_READY);
                     ThreadSleep(TIME20MS);
                     if (pThis->IsStartGetFreeTime() == true)
@@ -275,10 +276,12 @@ UINT CEntryConveyor::StartEntryConveyor(LPVOID wParam)
             break;
 
         case ConveyorStep::SEND_PREV_SMEMA:
-            bFirstGetFreeTime = true;
-            pThis->PrevSmemaOut(Conv, SMEMA_NOT_BUSY);
-            ThreadSleep(TIME20MS);
-            pThis->BeltOn(PrevInBeltSpd);
+            if (GetMaxBoardCount() == 0 || IsLoadable()) {
+                bFirstGetFreeTime = true;
+                pThis->PrevSmemaOut(Conv, SMEMA_NOT_BUSY);
+                ThreadSleep(TIME20MS);
+                pThis->BeltOn(PrevInBeltSpd);
+            }            
             TowerLampInPcb();
 			PrevLoadingStartTime = _time_get();
             if (bLoop != false)

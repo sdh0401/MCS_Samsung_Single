@@ -388,6 +388,7 @@ CString CDecoding2::StartRun()
 		TRACE(_T("[PWR] RunControl Step8\n"));
 		//SetPcbInfoConveyor(Pcb.Thickness, Pcb.StandByPusherZOffsetHeight, Pcb.UseSimultaneousLoading);
 		SetPcbInfoConveyor(Pcb.Thickness, Pcb.StandByPusherZOffsetHeight, Pcb.SimulLoadType);
+		SetMaxBoardCount(Pcb.MaxPcbLoadingCount);
 		TRACE(_T("[PWR] RunControl Step9\n"));
 		LastBlockNo = GetRemainFirstBlock(Pcb.MaxBlockCount, Prod.TotalInsertCount);
 		LastInsertNo = GetRemainFirstNo(Pcb.MaxBlockCount, Prod.TotalInsertCount);

@@ -140,6 +140,12 @@ double CRecognitionDivide::GetVAOffsetHeight(long FdNo)
 	return VARecognitionOffsetHeight;
 }
 
+double CRecognitionDivide::GetPickupZStandBy() {
+	double PickupZStandBy = 0.0;
+	PickupZStandBy = gcStep->GetPickupZStandBy();
+	return PickupZStandBy;
+}
+
 MODULE_LED CRecognitionDivide::GetLed(long FdNo)
 {
 	MODULE_LED Led;
@@ -730,7 +736,7 @@ long CRecognitionDivide::Run(bool bManualRecog)
 			}
 
 			Target.Axis[0] = GetZAxisFromHeadNo(FRONT_GANTRY, CatchHeadNo[0][0]);
-			Target.Command[0] = GetInsertByZ(FRONT_GANTRY) - GetMaxComponentHeight() - (CatchComponentHeight[CatchMoveZOrd][CatchUnit] + CatchComponentLeadHeight[CatchMoveZOrd][CatchUnit]) - CatchNozzle[CatchMoveZOrd][CatchUnit].TipHeight + CatchNozzle[CatchMoveZOrd][CatchUnit].PusherHeight;
+			Target.Command[0] = GetPickupZStandBy() - (CatchComponentHeight[CatchMoveZOrd][CatchUnit] + CatchComponentLeadHeight[CatchMoveZOrd][CatchUnit]) - CatchNozzle[CatchMoveZOrd][CatchUnit].TipHeight + CatchNozzle[CatchMoveZOrd][CatchUnit].PusherHeight;
 
 			Limit limit = GetLimit(GetAxisIndexFromAliasName(Target.Axis[0]));
 			if (limit.minus > Target.Command[0])

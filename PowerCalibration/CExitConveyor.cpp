@@ -318,6 +318,8 @@ UINT CExitConveyor::StartExitConveyor(LPVOID wParam)
                 //ThreadSleep(TIME20MS);
                 //pThis->BeltOff(NextOutBeltSpd);
                 bFirstGetFreeTime = true;
+                if (GetMaxBoardCount() == 1)
+                    SetLoadable(true);
                 if (bLoop != false)
                 {
                     //pThis->SetStep(ConveyorStep::START);
@@ -337,6 +339,8 @@ UINT CExitConveyor::StartExitConveyor(LPVOID wParam)
             if (pThis->CheckNextSmema(Conv) == SMEMA_BUSY)
             {
                 pThis->BeltOff(NextOutBeltSpd);
+                if (GetMaxBoardCount() == 1)
+                    SetLoadable(true);
                 if (bLoop != false)
                 {
                     pThis->SetStep(ConveyorStep::START);

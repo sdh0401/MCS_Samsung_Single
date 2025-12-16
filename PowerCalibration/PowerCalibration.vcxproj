@@ -125,10 +125,12 @@
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AdditionalOptions>-DUSE_BEGIN_THREAD /analyze:stacksize512000 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>C:\Program Files\SoftServo\WMX3\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalDependencies>sqlite3.lib;IMDll.lib;WMX3Api.lib;EcApi.lib;legacy_stdio_definitions.lib;legacy_stdio_wide_specifiers.lib;AdvancedMotionApi.lib;ApiBufferApi.lib;CompensationApi.lib;CoreMotionApi.lib;CyclicBufferApi.lib;EventApi.lib;IOApi.lib;LogApi.lib;SimuApi.lib;UserMemoryApi.lib;DbgHelp.Lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files\SoftServo\WMX3\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

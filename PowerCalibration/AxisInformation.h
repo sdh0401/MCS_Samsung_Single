@@ -723,3 +723,7 @@ extern long GetCustomerSiteFromBarcodeSetting(BARCODE Barcode);
 extern void gMainMES_Disconnect();
 extern void ptRot(double* x, double* y, double rad);
 extern void ptRotDeg(double* x, double* y, double deg);
+extern long GetMaxBoardCount();
+extern void SetMaxBoardCount(long MaxBoardCount);
+extern bool IsLoadable();
+extern void SetLoadable(bool Loadable);

@@ -17,6 +17,7 @@ public:
 	double GetComponentHeight(long FdNo);
 	double GetComponentLeadHeight(long FdNo);
 	double GetVAOffsetHeight(long FdNo);
+	double GetPickupZStandBy();
 	MODULE_LED GetLed(long FdNo);
 	long GetManualCompensationUse();
 	Point_XYRZ GetManualVisionResult();

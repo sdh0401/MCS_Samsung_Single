@@ -63,6 +63,10 @@ public:
 	long SetPcbTransferTimeOut(long ConvTable, long Conv, long LoadingTimeOut, long UnloadingTimeOut);
 	void SetHeightMeasureDone(long done);
 	long GetHeightMeasureDone();
+	void SetMaxBoardCount(long MaxBoardCount);
+	long GetMaxBoardCount();
+	void SetLoadable(bool Loadable);
+	bool GetLoadable();;
 
 private:
 	ConveyorCtrlStep m_Step;
@@ -77,6 +81,8 @@ private:
 	ULONGLONG m_LineOfBalanceTimeGet;
 	ULONGLONG m_LineOfBalanceElapsed;
 	JogInfo m_HighSpd, m_MidSpd, m_LowSpd;
+	long m_MaxBoardCount;
+	bool m_Loadable;
 };
 
 extern CPowerConveyorControl* gcPowerConveyorControl;

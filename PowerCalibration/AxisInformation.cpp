@@ -10384,3 +10384,23 @@ void ptRotDeg(double* x, double* y, double deg)
 	*x = tmp * ca - (*y) * sa;
 	*y = tmp * sa + (*y) * ca;
 }
+
+long GetMaxBoardCount()
+{
+	return gcPowerConveyorControl->GetMaxBoardCount();
+}
+
+void SetMaxBoardCount(long MaxBoardCount)
+{
+	gcPowerConveyorControl->SetMaxBoardCount(MaxBoardCount);
+}
+
+bool IsLoadable()
+{
+	return gcPowerConveyorControl->GetLoadable();
+}
+
+void SetLoadable(bool Loadable)
+{
+	gcPowerConveyorControl->SetLoadable(Loadable);
+}

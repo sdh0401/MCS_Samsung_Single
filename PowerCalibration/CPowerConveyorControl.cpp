@@ -989,3 +989,22 @@ long CPowerConveyorControl::GetHeightMeasureDone()
     }
     return done;
 }
+
+long CPowerConveyorControl::GetMaxBoardCount() {
+    return m_MaxBoardCount;
+}
+
+void CPowerConveyorControl::SetMaxBoardCount(long MaxBoardCount) {
+    TRACE(_T("[PWR] SetMaxBoardCount %d\n"), MaxBoardCount);
+    m_MaxBoardCount = MaxBoardCount;
+}
+
+bool CPowerConveyorControl::GetLoadable() {
+    if (gcPowerLog->IsShowConveyorLog() == true)
+        return m_Loadable;
+}
+
+void CPowerConveyorControl::SetLoadable(bool Loadable) {
+    TRACE(_T("[PWR] SetLoadable %d\n"), Loadable);
+    m_Loadable = Loadable;
+}
