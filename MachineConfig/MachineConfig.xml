@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- path : C:\Power\i6.0\MCS\MachineConfig -->
+<ROOT>
+	<CONFIG_FILE>
+		<ANC>MachineConfig_ANC_Rev3.xml</ANC>		
+	</CONFIG_FILE>
+  <HARDWARE_OPTION>
+    <!-- IO_MAP_VERSION : 2 = RSA 1st -->
+    <IO_MAP_VERSION>2</IO_MAP_VERSION>
+    <!-- CAMERA_VERSION : 1 = 1280x1024 -->
+    <CAMERA_VERSION>1</CAMERA_VERSION>
+    <!-- CAMERA_LASER : 1 = 카메라 1개당 레이저 출력 1개 -->
+    <CAMERA_LASER>1</CAMERA_LASER>
+  </HARDWARE_OPTION> 
+</ROOT>
+
+

@@ -1,0 +1,3009 @@
+#include "pch.h"
+#include "CPowerIO.h"
+#include "GlobalData.h"
+#include "GlobalIODefine.h"
+#include "GlobalDefine.h"
+#include "Trace.h"
+#include "CPowerLog.h"
+#include "CPowerCalibrationData.h"
+#include "CMachineConfig.h"
+
+CPowerIO* gcPowerIO;
+CPowerIO::CPowerIO(bool bReverse)
+{
+	for (long indx = 0; indx < MAXIODEFINE; ++indx)
+	{
+		m_IOConfig[indx].HWType = 0;
+		m_IOConfig[indx].Usage = NO_USE;
+		m_IOConfig[indx].Description.Format(_T("name%d"), indx);
+		m_IOConfig[indx].IsOutput = 0;
+	}
+
+	ZeroMemory(&m_Simulation, sizeof(m_Simulation));
+	m_IOVer = 0;
+	TRACE(_T("[PWR] CPowerIO Reverse Option:%d\n"), bReverse);
+	ReadIOConfig(bReverse);
+}
+
+CPowerIO::~CPowerIO()
+{
+}
+
+void CPowerIO::ReadIOConfig(bool bReverse)
+{
+	//for (long indx = 0; indx < MAXIODEFINE; ++indx)
+	//{
+	//	m_IOConfig[indx].HWType = IO_WMX3_DIRECT;
+	//}
+	ReadAncIO();
+	ReadDoorIO();
+	ReadSmemaIO();
+	ReadTowerIO();
+	ReadSafetyIO();
+	ReadFeederIO();
+	ReadUserKeyIO();
+	ReadHeadAnalogIO();
+	ReadHeadSuctionBlowIO();
+	ReadHeightMeasurementIO();
+	ReadConveyorIO(bReverse);
+	ReadMachineEnvironmentIO();
+	ReadLaserIO();
+	ReadPusherPlateIO();
+
+	long ioVer = 0;
+	if (gCMachineConfig->GetHWOptionIOMapVersion(&ioVer) == NO_ERR)
+	{
+		m_IOVer = ioVer;
+
+		if (GetFormingDRBCoilUse() == true)
+		{
+			ReadFormingDRBCoilIO();
+		}
+
+		if (ioVer == 2)
+		{
+			ReadIOMapRSA1st();
+		}
+		else if (ioVer == 0) // ±¸Çüi
+		{
+			ReadAncIO_Weid1st();
+			ReadDoorIO_Weid1st();
+			ReadSmemaIO_Weid1st();
+			ReadTowerIO_Weid1st();
+			ReadSafetyIO_Weid1st();
+			ReadFeederIO_Weid1st();
+			ReadUserKeyIO_Weid1st();
+			ReadHeadAnalogIO_Weid1st();
+			ReadHeadSuctionBlowIO_Weid1st();
+			ReadHeightMeasurementIO_Weid1st();
+			ReadConveyorIO_Weid1st(bReverse);
+			ReadMachineEnvironmentIO_Weid1st();
+			ReadLaserIO_Weid1st();
+			ReadPusherPlateIO_Weid1st();
+
+			TRACE(_T("[PWR] Weidmueller 1st read complete.\n"));
+
+		}
+	}
+}
+
+void CPowerIO::ReadHeadAnalogIO()
+{
+	m_IOConfig[IN_FHEAD1_ANALOG].Usage = YES_USE;
+	m_IOConfig[IN_FHEAD1_ANALOG].HWType = IO_WMX3_ANALOG_EJECTOR;
+	m_IOConfig[IN_FHEAD1_ANALOG].IOAddr = 5009;
+
+	m_IOConfig[IN_FHEAD2_ANALOG].Usage = YES_USE;
+	m_IOConfig[IN_FHEAD2_ANALOG].HWType = IO_WMX3_ANALOG_EJECTOR;
+	m_IOConfig[IN_FHEAD2_ANALOG].IOAddr = 5011;
+
+	m_IOConfig[IN_FHEAD3_ANALOG].Usage = YES_USE;
+	m_IOConfig[IN_FHEAD3_ANALOG].HWType = IO_WMX3_ANALOG_EJECTOR;
+	m_IOConfig[IN_FHEAD3_ANALOG].IOAddr = 5013;
+
+	m_IOConfig[IN_FHEAD4_ANALOG].Usage = YES_USE;
+	m_IOConfig[IN_FHEAD4_ANALOG].HWType = IO_WMX3_ANALOG_EJECTOR;
+	m_IOConfig[IN_FHEAD4_ANALOG].IOAddr = 5018;
+
+	m_IOConfig[IN_FHEAD5_ANALOG].Usage = YES_USE;
+	m_IOConfig[IN_FHEAD5_ANALOG].HWType = IO_WMX3_ANALOG_EJECTOR;
+	m_IOConfig[IN_FHEAD5_ANALOG].IOAddr = 5020;
+
+	m_IOConfig[IN_FHEAD6_ANALOG].Usage = YES_USE;
+	m_IOConfig[IN_FHEAD6_ANALOG].HWType = IO_WMX3_ANALOG_EJECTOR;
+	m_IOConfig[IN_FHEAD6_ANALOG].IOAddr = 5022;
+}
+
+void CPowerIO::ReadHeadSuctionBlowIO()
+{
+	m_IOConfig[OUT_FHEAD1_BLO].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD1_BLO].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD1_BLO].IOAddr = 5002;
+	m_IOConfig[OUT_FHEAD1_BLO].IOBit = 0;
+	m_IOConfig[OUT_FHEAD1_BLO].IsOutput = 1;
+
+	m_IOConfig[OUT_FHEAD1_SUC].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD1_SUC].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD1_SUC].IOAddr = 5002;
+	m_IOConfig[OUT_FHEAD1_SUC].IOBit = 1;
+	m_IOConfig[OUT_FHEAD1_SUC].IsOutput = 1;
+
+	m_IOConfig[OUT_FHEAD2_BLO].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD2_BLO].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD2_BLO].IOAddr = 5002;
+	m_IOConfig[OUT_FHEAD2_BLO].IOBit = 2;
+	m_IOConfig[OUT_FHEAD2_BLO].IsOutput = 1;
+
+	m_IOConfig[OUT_FHEAD2_SUC].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD2_SUC].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD2_SUC].IOAddr = 5002;
+	m_IOConfig[OUT_FHEAD2_SUC].IOBit = 3;
+	m_IOConfig[OUT_FHEAD2_SUC].IsOutput = 1;
+
+	m_IOConfig[OUT_FHEAD3_BLO].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD3_BLO].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD3_BLO].IOAddr = 5002;
+	m_IOConfig[OUT_FHEAD3_BLO].IOBit = 4;
+	m_IOConfig[OUT_FHEAD3_BLO].IsOutput = 1;
+
+	m_IOConfig[OUT_FHEAD3_SUC].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD3_SUC].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD3_SUC].IOAddr = 5002;
+	m_IOConfig[OUT_FHEAD3_SUC].IOBit = 5;
+	m_IOConfig[OUT_FHEAD3_SUC].IsOutput = 1;
+
+	m_IOConfig[OUT_FHEAD4_BLO].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD4_BLO].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD4_BLO].IOAddr = 5002;
+	m_IOConfig[OUT_FHEAD4_BLO].IOBit = 6;
+	m_IOConfig[OUT_FHEAD4_BLO].IsOutput = 1;
+	
+	m_IOConfig[OUT_FHEAD4_SUC].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD4_SUC].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD4_SUC].IOAddr = 5002;
+	m_IOConfig[OUT_FHEAD4_SUC].IOBit = 7;
+	m_IOConfig[OUT_FHEAD4_SUC].IsOutput = 1;
+
+	m_IOConfig[OUT_FHEAD5_BLO].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD5_BLO].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD5_BLO].IOAddr = 5003;
+	m_IOConfig[OUT_FHEAD5_BLO].IOBit = 0;
+	m_IOConfig[OUT_FHEAD5_BLO].IsOutput = 1;
+
+	m_IOConfig[OUT_FHEAD5_SUC].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD5_SUC].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD5_SUC].IOAddr = 5003;
+	m_IOConfig[OUT_FHEAD5_SUC].IOBit = 1;
+	m_IOConfig[OUT_FHEAD5_SUC].IsOutput = 1;
+
+	m_IOConfig[OUT_FHEAD6_BLO].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD6_BLO].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD6_BLO].IOAddr = 5003;
+	m_IOConfig[OUT_FHEAD6_BLO].IOBit = 2;
+	m_IOConfig[OUT_FHEAD6_BLO].IsOutput = 1;
+
+	m_IOConfig[OUT_FHEAD6_SUC].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD6_SUC].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD6_SUC].IOAddr = 5003;
+	m_IOConfig[OUT_FHEAD6_SUC].IOBit = 3;
+	m_IOConfig[OUT_FHEAD6_SUC].IsOutput = 1;
+}
+
+void CPowerIO::ReadHeightMeasurementIO()
+{
+	m_IOConfig[OUT_FHEAD_ZHMD_OFF].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD_ZHMD_OFF].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD_ZHMD_OFF].IOAddr = 5003;
+	m_IOConfig[OUT_FHEAD_ZHMD_OFF].IOBit = 4;
+	m_IOConfig[OUT_FHEAD_ZHMD_OFF].IsOutput = 1;
+	
+	m_IOConfig[IN_FHEAD_ZHMD_HEIGHT].Usage = YES_USE;
+	m_IOConfig[IN_FHEAD_ZHMD_HEIGHT].HWType = IO_WMX3_ANALOG_SICK;
+	m_IOConfig[IN_FHEAD_ZHMD_HEIGHT].IOAddr = 5024;
+
+//	m_IOConfig[OUT_RHEAD_ZHMD_OFF].Usage = YES_USE;
+//	m_IOConfig[OUT_RHEAD_ZHMD_OFF].HWType = IO_WMX3_DIRECT;
+//	m_IOConfig[OUT_RHEAD_ZHMD_OFF].IOAddr = 5008;
+//	m_IOConfig[OUT_RHEAD_ZHMD_OFF].IOBit = 5;
+//
+//	m_IOConfig[IN_RHEAD_ZHMD_HEIGHT].Usage = YES_USE;
+//	m_IOConfig[IN_RHEAD_ZHMD_HEIGHT].HWType = IO_WMX3_ANALOG_SICK;
+//	m_IOConfig[IN_RHEAD_ZHMD_HEIGHT].IOAddr = 5015;
+}
+
+void CPowerIO::ReadConveyorIO(bool bReverse)
+{
+	if (bReverse == true)
+	{
+		// InBuffer
+		m_IOConfig[IN_FCONV_ENTRY_ENT].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_ENTRY_ENT].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_ENTRY_ENT].IOAddr = 1702;
+		m_IOConfig[IN_FCONV_ENTRY_ENT].IOBit = 1;
+
+		m_IOConfig[IN_FCONV_ENTRY_EXIST].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_ENTRY_EXIST].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_ENTRY_EXIST].IOAddr = 1702;
+		m_IOConfig[IN_FCONV_ENTRY_EXIST].IOBit = 0;
+		
+		// Work
+		m_IOConfig[IN_FCONV_WORK1_LOW].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_WORK1_LOW].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_WORK1_LOW].IOAddr = 1602;
+		m_IOConfig[IN_FCONV_WORK1_LOW].IOBit = 1;
+
+		m_IOConfig[IN_FCONV_WORK1_EXIST].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_WORK1_EXIST].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_WORK1_EXIST].IOAddr = 1602;
+		m_IOConfig[IN_FCONV_WORK1_EXIST].IOBit = 0;
+
+		m_IOConfig[IN_FCONV_WORK1_OUT].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_WORK1_OUT].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_WORK1_OUT].IOAddr = 1502;
+		m_IOConfig[IN_FCONV_WORK1_OUT].IOBit = 1;
+
+		m_IOConfig[IN_FCONV_WORK1_STOP_UP].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_WORK1_STOP_UP].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_WORK1_STOP_UP].IOAddr = 1602;
+		m_IOConfig[IN_FCONV_WORK1_STOP_UP].IOBit = 2;
+
+		m_IOConfig[OUT_FCONV_WORK1_STOP_UP].Usage = YES_USE;
+		m_IOConfig[OUT_FCONV_WORK1_STOP_UP].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_FCONV_WORK1_STOP_UP].IOAddr = 1602;
+		m_IOConfig[OUT_FCONV_WORK1_STOP_UP].IOBit = 0;
+		m_IOConfig[OUT_FCONV_WORK1_STOP_UP].IsOutput = 1;
+
+		// OutBuffer
+		m_IOConfig[IN_FCONV_EXIT_EXIST].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_EXIT_EXIST].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_EXIT_EXIST].IOAddr = 1502;
+		m_IOConfig[IN_FCONV_EXIT_EXIST].IOBit = 0;
+	}
+	else
+	{
+		// InBuffer
+		m_IOConfig[IN_FCONV_ENTRY_ENT].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_ENTRY_ENT].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_ENTRY_ENT].IOAddr = 1502;
+		m_IOConfig[IN_FCONV_ENTRY_ENT].IOBit = 0;
+
+		m_IOConfig[IN_FCONV_ENTRY_EXIST].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_ENTRY_EXIST].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_ENTRY_EXIST].IOAddr = 1502;
+		m_IOConfig[IN_FCONV_ENTRY_EXIST].IOBit = 1;
+
+		// Work
+		m_IOConfig[IN_FCONV_WORK1_LOW].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_WORK1_LOW].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_WORK1_LOW].IOAddr = 1602;
+		m_IOConfig[IN_FCONV_WORK1_LOW].IOBit = 1;
+
+		m_IOConfig[IN_FCONV_WORK1_EXIST].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_WORK1_EXIST].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_WORK1_EXIST].IOAddr = 1602;
+		m_IOConfig[IN_FCONV_WORK1_EXIST].IOBit = 0;
+
+		m_IOConfig[IN_FCONV_WORK1_OUT].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_WORK1_OUT].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_WORK1_OUT].IOAddr = 1702;
+		m_IOConfig[IN_FCONV_WORK1_OUT].IOBit = 0;
+
+		m_IOConfig[IN_FCONV_WORK1_STOP_UP].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_WORK1_STOP_UP].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_WORK1_STOP_UP].IOAddr = 1602;
+		m_IOConfig[IN_FCONV_WORK1_STOP_UP].IOBit = 2;
+
+		m_IOConfig[OUT_FCONV_WORK1_STOP_UP].Usage = YES_USE;
+		m_IOConfig[OUT_FCONV_WORK1_STOP_UP].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_FCONV_WORK1_STOP_UP].IOAddr = 1602;
+		m_IOConfig[OUT_FCONV_WORK1_STOP_UP].IOBit = 0;
+		m_IOConfig[OUT_FCONV_WORK1_STOP_UP].IsOutput = 1;
+
+		// OutBuffer
+		m_IOConfig[IN_FCONV_EXIT_EXIST].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_EXIT_EXIST].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_EXIT_EXIST].IOAddr = 1702;
+		m_IOConfig[IN_FCONV_EXIT_EXIST].IOBit = 1;
+	}
+}
+
+void CPowerIO::ReadAncIO()
+{
+	// Front Clamp Lock & Unlock
+	m_IOConfig[IN_FANC_CLAMP_LOCK].Usage = YES_USE;
+	m_IOConfig[IN_FANC_CLAMP_LOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FANC_CLAMP_LOCK].IOAddr = 5000;
+	m_IOConfig[IN_FANC_CLAMP_LOCK].IOBit = 0;
+
+	m_IOConfig[IN_FANC_CLAMP_UNLOCK].Usage = YES_USE;
+	m_IOConfig[IN_FANC_CLAMP_UNLOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FANC_CLAMP_UNLOCK].IOAddr = 5000;
+	m_IOConfig[IN_FANC_CLAMP_UNLOCK].IOBit = 1;
+
+	m_IOConfig[OUT_FANC_CLAMP_UNLOCK].Usage = YES_USE;
+	m_IOConfig[OUT_FANC_CLAMP_UNLOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FANC_CLAMP_UNLOCK].IOAddr = 5000;
+	m_IOConfig[OUT_FANC_CLAMP_UNLOCK].IOBit = 0;
+	m_IOConfig[OUT_FANC_CLAMP_UNLOCK].IsOutput = 1;
+
+	// Front Base Up & Down
+	m_IOConfig[IN_FANC_BASE_UP].Usage = YES_USE;
+	m_IOConfig[IN_FANC_BASE_UP].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FANC_BASE_UP].IOAddr = 5000;
+	m_IOConfig[IN_FANC_BASE_UP].IOBit = 2;
+
+	m_IOConfig[IN_FANC_BASE_DN].Usage = YES_USE;
+	m_IOConfig[IN_FANC_BASE_DN].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FANC_BASE_DN].IOAddr = 5000;
+	m_IOConfig[IN_FANC_BASE_DN].IOBit = 3;
+
+	m_IOConfig[OUT_FANC_BASE_UP].Usage = YES_USE;
+	m_IOConfig[OUT_FANC_BASE_UP].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FANC_BASE_UP].IOAddr = 5000;
+	m_IOConfig[OUT_FANC_BASE_UP].IOBit = 1;
+	m_IOConfig[OUT_FANC_BASE_UP].IsOutput = 1;
+
+	// Rear Clamp Lock & Unlock
+	m_IOConfig[IN_RANC_CLAMP_LOCK].Usage = NO_USE;
+	m_IOConfig[IN_RANC_CLAMP_LOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RANC_CLAMP_LOCK].IOAddr = 5003;
+	m_IOConfig[IN_RANC_CLAMP_LOCK].IOBit = 0;
+
+	m_IOConfig[IN_RANC_CLAMP_UNLOCK].Usage = NO_USE;
+	m_IOConfig[IN_RANC_CLAMP_UNLOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RANC_CLAMP_UNLOCK].IOAddr = 5003;
+	m_IOConfig[IN_RANC_CLAMP_UNLOCK].IOBit = 1;
+
+	m_IOConfig[OUT_RANC_CLAMP_UNLOCK].Usage = NO_USE;
+	m_IOConfig[OUT_RANC_CLAMP_UNLOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RANC_CLAMP_UNLOCK].IOAddr = 5000;
+	m_IOConfig[OUT_RANC_CLAMP_UNLOCK].IOBit = 2;
+	m_IOConfig[OUT_RANC_CLAMP_UNLOCK].IsOutput = 1;
+
+	// Rear Base Up & Down
+	m_IOConfig[IN_RANC_BASE_UP].Usage = NO_USE;
+	m_IOConfig[IN_RANC_BASE_UP].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RANC_BASE_UP].IOAddr = 5003;
+	m_IOConfig[IN_RANC_BASE_UP].IOBit = 2;
+
+	m_IOConfig[IN_RANC_BASE_DN].Usage = NO_USE;
+	m_IOConfig[IN_RANC_BASE_DN].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RANC_BASE_DN].IOAddr = 5003;
+	m_IOConfig[IN_RANC_BASE_DN].IOBit = 3;
+
+	m_IOConfig[OUT_RANC_BASE_UP].Usage = NO_USE;
+	m_IOConfig[OUT_RANC_BASE_UP].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RANC_BASE_UP].IOAddr = 5000;
+	m_IOConfig[OUT_RANC_BASE_UP].IOBit = 3;
+	m_IOConfig[OUT_RANC_BASE_UP].IsOutput = 1;
+}
+
+void CPowerIO::ReadDoorIO()
+{
+	// Front Door Lock
+	m_IOConfig[IN_FDOOR_KEY_UNLOCK].Usage = YES_USE;
+	m_IOConfig[IN_FDOOR_KEY_UNLOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FDOOR_KEY_UNLOCK].IOAddr = 5000;
+	m_IOConfig[IN_FDOOR_KEY_UNLOCK].IOBit = 4;
+
+	m_IOConfig[IN_FDOOR_KEY_OUT].Usage = YES_USE;
+	m_IOConfig[IN_FDOOR_KEY_OUT].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FDOOR_KEY_OUT].IOAddr = 5000;
+	m_IOConfig[IN_FDOOR_KEY_OUT].IOBit = 5;
+
+	m_IOConfig[OUT_FDOOR_KEY_LOCK].Usage = YES_USE;
+	m_IOConfig[OUT_FDOOR_KEY_LOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FDOOR_KEY_LOCK].IOAddr = 5000;
+	m_IOConfig[OUT_FDOOR_KEY_LOCK].IOBit = 4;
+	m_IOConfig[OUT_FDOOR_KEY_LOCK].IsOutput = 1;
+
+	// Rear Door Lock
+	m_IOConfig[IN_RDOOR_KEY_UNLOCK].Usage = YES_USE;
+	m_IOConfig[IN_RDOOR_KEY_UNLOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RDOOR_KEY_UNLOCK].IOAddr = 5003;
+	m_IOConfig[IN_RDOOR_KEY_UNLOCK].IOBit = 4;
+
+	m_IOConfig[IN_RDOOR_KEY_OUT].Usage = YES_USE;
+	m_IOConfig[IN_RDOOR_KEY_OUT].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RDOOR_KEY_OUT].IOAddr = 5003;
+	m_IOConfig[IN_RDOOR_KEY_OUT].IOBit = 5;
+
+	m_IOConfig[OUT_RDOOR_KEY_LOCK].Usage = YES_USE;
+	m_IOConfig[OUT_RDOOR_KEY_LOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RDOOR_KEY_LOCK].IOAddr = 5000;
+	m_IOConfig[OUT_RDOOR_KEY_LOCK].IOBit = 5;
+	m_IOConfig[OUT_RDOOR_KEY_LOCK].IsOutput = 1;
+}
+
+void CPowerIO::ReadSafetyIO()
+{
+	// Front Area Sensor
+	m_IOConfig[IN_FRONT_AREA_SENSOR].Usage = YES_USE;
+	m_IOConfig[IN_FRONT_AREA_SENSOR].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FRONT_AREA_SENSOR].IOAddr = 5000;
+	m_IOConfig[IN_FRONT_AREA_SENSOR].IOBit = 6;
+
+	// Rear Area Sensor
+	m_IOConfig[IN_REAR_AREA_SENSOR].Usage = YES_USE;
+	m_IOConfig[IN_REAR_AREA_SENSOR].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_REAR_AREA_SENSOR].IOAddr = 5003;
+	m_IOConfig[IN_REAR_AREA_SENSOR].IOBit = 6;
+
+	// Front Area Sensor
+	m_IOConfig[IN_FRONT_AREA_SENSOR_2ND].Usage = YES_USE;
+	m_IOConfig[IN_FRONT_AREA_SENSOR_2ND].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FRONT_AREA_SENSOR_2ND].IOAddr = 5004;
+	m_IOConfig[IN_FRONT_AREA_SENSOR_2ND].IOBit = 4;
+
+	// Rear Area Sensor
+	m_IOConfig[IN_REAR_AREA_SENSOR_2ND].Usage = YES_USE;
+	m_IOConfig[IN_REAR_AREA_SENSOR_2ND].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_REAR_AREA_SENSOR_2ND].IOAddr = 5004;
+	m_IOConfig[IN_REAR_AREA_SENSOR_2ND].IOBit = 5;
+
+	// Front Emergency
+	m_IOConfig[IN_FEMERGENCY].Usage = YES_USE;
+	m_IOConfig[IN_FEMERGENCY].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FEMERGENCY].IOAddr = 5000;
+	m_IOConfig[IN_FEMERGENCY].IOBit = 7;
+
+	// Rear Emergency
+	m_IOConfig[IN_REMERGENCY].Usage = YES_USE;
+	m_IOConfig[IN_REMERGENCY].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_REMERGENCY].IOAddr = 5003;
+	m_IOConfig[IN_REMERGENCY].IOBit = 7;
+
+	m_IOConfig[IN_SAFETY_ON].Usage = YES_USE;
+	m_IOConfig[IN_SAFETY_ON].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_SAFETY_ON].IOAddr = 5001;
+	m_IOConfig[IN_SAFETY_ON].IOBit = 5;
+
+	m_IOConfig[IN_LOTO_KEY_ON].Usage = YES_USE;
+	m_IOConfig[IN_LOTO_KEY_ON].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_LOTO_KEY_ON].IOAddr = 5001;
+	m_IOConfig[IN_LOTO_KEY_ON].IOBit = 6;
+
+	// Motor Power IO
+	m_IOConfig[OUT_MOTOR_POWER].Usage = YES_USE;
+	m_IOConfig[OUT_MOTOR_POWER].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_MOTOR_POWER].IOAddr = 5001;
+	m_IOConfig[OUT_MOTOR_POWER].IOBit = 6;
+	m_IOConfig[OUT_MOTOR_POWER].IsOutput = 1;
+}
+
+void CPowerIO::ReadUserKeyIO()
+{
+	m_IOConfig[IN_STOP_PANEL_KEY].Usage = YES_USE;
+	m_IOConfig[IN_STOP_PANEL_KEY].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_STOP_PANEL_KEY].IOAddr = 5001;
+	m_IOConfig[IN_STOP_PANEL_KEY].IOBit = 0;
+
+	m_IOConfig[OUT_STOP_PANEL_LED].Usage = YES_USE;
+	m_IOConfig[OUT_STOP_PANEL_LED].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_STOP_PANEL_LED].IOAddr = 5000;
+	m_IOConfig[OUT_STOP_PANEL_LED].IOBit = 6;
+	m_IOConfig[OUT_STOP_PANEL_LED].IsOutput = 1;
+
+	m_IOConfig[IN_FDOOR_LOCK_PANEL_KEY].Usage = YES_USE;
+	m_IOConfig[IN_FDOOR_LOCK_PANEL_KEY].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FDOOR_LOCK_PANEL_KEY].IOAddr = 5001;
+	m_IOConfig[IN_FDOOR_LOCK_PANEL_KEY].IOBit = 1;
+
+	m_IOConfig[OUT_FDOOR_LOCK_PANEL_LED].Usage = YES_USE;
+	m_IOConfig[OUT_FDOOR_LOCK_PANEL_LED].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FDOOR_LOCK_PANEL_LED].IOAddr = 5000;
+	m_IOConfig[OUT_FDOOR_LOCK_PANEL_LED].IOBit = 7;
+	m_IOConfig[OUT_FDOOR_LOCK_PANEL_LED].IsOutput = 1;
+
+	m_IOConfig[IN_START_PANEL_KEY].Usage = YES_USE;
+	m_IOConfig[IN_START_PANEL_KEY].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_START_PANEL_KEY].IOAddr = 5001;
+	m_IOConfig[IN_START_PANEL_KEY].IOBit = 2;
+
+	m_IOConfig[OUT_START_PANEL_LED].Usage = YES_USE;
+	m_IOConfig[OUT_START_PANEL_LED].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_START_PANEL_LED].IOAddr = 5001;
+	m_IOConfig[OUT_START_PANEL_LED].IOBit = 0;
+	m_IOConfig[OUT_START_PANEL_LED].IsOutput = 1;
+
+	m_IOConfig[IN_RESET_PANEL_KEY].Usage = YES_USE;
+	m_IOConfig[IN_RESET_PANEL_KEY].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RESET_PANEL_KEY].IOAddr = 5001;
+	m_IOConfig[IN_RESET_PANEL_KEY].IOBit = 3;
+
+	m_IOConfig[OUT_RESET_PANEL_LED].Usage = YES_USE;
+	m_IOConfig[OUT_RESET_PANEL_LED].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RESET_PANEL_LED].IOAddr = 5001;
+	m_IOConfig[OUT_RESET_PANEL_LED].IOBit = 1;
+	m_IOConfig[OUT_RESET_PANEL_LED].IsOutput = 1;
+
+	m_IOConfig[IN_RDOOR_LOCK_PANEL_KEY].Usage = YES_USE;
+	m_IOConfig[IN_RDOOR_LOCK_PANEL_KEY].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RDOOR_LOCK_PANEL_KEY].IOAddr = 5001;
+	m_IOConfig[IN_RDOOR_LOCK_PANEL_KEY].IOBit = 1;
+
+	m_IOConfig[OUT_RDOOR_LOCK_PANEL_LED].Usage = YES_USE;
+	m_IOConfig[OUT_RDOOR_LOCK_PANEL_LED].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RDOOR_LOCK_PANEL_LED].IOAddr = 5000;
+	m_IOConfig[OUT_RDOOR_LOCK_PANEL_LED].IOBit = 7;
+	m_IOConfig[OUT_RDOOR_LOCK_PANEL_LED].IsOutput = 1;
+}
+
+void CPowerIO::ReadMachineEnvironmentIO()
+{
+	m_IOConfig[IN_AIR_PRESS_LOW].Usage = YES_USE;
+	m_IOConfig[IN_AIR_PRESS_LOW].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_AIR_PRESS_LOW].IOAddr = 5001;
+	m_IOConfig[IN_AIR_PRESS_LOW].IOBit = 4;
+
+	m_IOConfig[OUT_CLEAN_CAM_BLOW].Usage = YES_USE;
+	m_IOConfig[OUT_CLEAN_CAM_BLOW].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_CLEAN_CAM_BLOW].IOAddr = 5003;
+	m_IOConfig[OUT_CLEAN_CAM_BLOW].IOBit = 6;
+	m_IOConfig[OUT_CLEAN_CAM_BLOW].IsOutput = 1;
+
+	m_IOConfig[OUT_F1ST_LASER_ON].Usage = YES_USE;
+	m_IOConfig[OUT_F1ST_LASER_ON].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_F1ST_LASER_ON].IOAddr = 5004;
+	m_IOConfig[OUT_F1ST_LASER_ON].IOBit = 4;
+	m_IOConfig[OUT_F1ST_LASER_ON].IsOutput = 1;
+
+	m_IOConfig[OUT_R1ST_LASER_ON].Usage = YES_USE;
+	m_IOConfig[OUT_R1ST_LASER_ON].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_R1ST_LASER_ON].IOAddr = 5004;
+	m_IOConfig[OUT_R1ST_LASER_ON].IOBit = 5;
+	m_IOConfig[OUT_R1ST_LASER_ON].IsOutput = 1;
+
+	if (GetUseRTDSensorFX() == 1)
+	{
+		m_IOConfig[IN_FX_LMTEMP_LOW].Usage = YES_USE;
+		m_IOConfig[IN_FX_LMTEMP_LOW].HWType = IO_WMX3_ANALOG_RTD;
+		m_IOConfig[IN_FX_LMTEMP_LOW].IOAddr = 5027;
+	}
+	else
+	{
+		m_IOConfig[IN_FX_LMTEMP_LOW].Usage = YES_USE;
+		m_IOConfig[IN_FX_LMTEMP_LOW].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FX_LMTEMP_LOW].IOAddr = 5004;
+		m_IOConfig[IN_FX_LMTEMP_LOW].IOBit = 4;
+	}
+	if (GetUseRTDSensorFY1() == 1)
+	{
+		m_IOConfig[IN_FY1_LMTEMP_LOW].Usage = YES_USE;
+		m_IOConfig[IN_FY1_LMTEMP_LOW].HWType = IO_WMX3_ANALOG_RTD;
+		m_IOConfig[IN_FY1_LMTEMP_LOW].IOAddr = 5029;
+	}
+	else
+	{
+		m_IOConfig[IN_FY1_LMTEMP_LOW].Usage = YES_USE;
+		m_IOConfig[IN_FY1_LMTEMP_LOW].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FY1_LMTEMP_LOW].IOAddr = 5004;
+		m_IOConfig[IN_FY1_LMTEMP_LOW].IOBit = 5;
+	}
+	if (GetUseRTDSensorFY2() == 1)
+	{
+		m_IOConfig[IN_FY2_LMTEMP_LOW].Usage = YES_USE;
+		m_IOConfig[IN_FY2_LMTEMP_LOW].HWType = IO_WMX3_ANALOG_RTD;
+		m_IOConfig[IN_FY2_LMTEMP_LOW].IOAddr = 5031;
+	}
+	else
+	{
+		m_IOConfig[IN_FY2_LMTEMP_LOW].Usage = YES_USE;
+		m_IOConfig[IN_FY2_LMTEMP_LOW].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FY2_LMTEMP_LOW].IOAddr = 5004;
+		m_IOConfig[IN_FY2_LMTEMP_LOW].IOBit = 6;
+	}
+
+	m_IOConfig[IN_RX_LMTEMP_LOW].Usage = NO_USE;
+	m_IOConfig[IN_RX_LMTEMP_LOW].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RX_LMTEMP_LOW].IOAddr = 5004;
+	m_IOConfig[IN_RX_LMTEMP_LOW].IOBit = 5;
+
+	m_IOConfig[IN_RY1_LMTEMP_LOW].Usage = NO_USE;
+	m_IOConfig[IN_RY1_LMTEMP_LOW].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RY1_LMTEMP_LOW].IOAddr = 5004;
+	m_IOConfig[IN_RY1_LMTEMP_LOW].IOBit = 5;
+
+	m_IOConfig[IN_RY2_LMTEMP_LOW].Usage = NO_USE;
+	m_IOConfig[IN_RY2_LMTEMP_LOW].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RY2_LMTEMP_LOW].IOAddr = 5004;
+	m_IOConfig[IN_RY2_LMTEMP_LOW].IOBit = 5;
+}
+
+void CPowerIO::ReadSmemaIO()
+{
+	// Front Smema IO
+	m_IOConfig[IN_FCONV_PREV_IN].Usage = YES_USE;
+	m_IOConfig[IN_FCONV_PREV_IN].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FCONV_PREV_IN].IOAddr = 5004;
+	m_IOConfig[IN_FCONV_PREV_IN].IOBit = 0;
+
+	m_IOConfig[OUT_FCONV_PREV_OUT].Usage = YES_USE;
+	m_IOConfig[OUT_FCONV_PREV_OUT].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FCONV_PREV_OUT].IOAddr = 5003;
+	m_IOConfig[OUT_FCONV_PREV_OUT].IOBit = 5;
+	m_IOConfig[OUT_FCONV_PREV_OUT].IsOutput = 1;
+
+	m_IOConfig[IN_FCONV_NEXT_IN].Usage = YES_USE;
+	m_IOConfig[IN_FCONV_NEXT_IN].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FCONV_NEXT_IN].IOAddr = 5004;
+	m_IOConfig[IN_FCONV_NEXT_IN].IOBit = 1;
+
+	m_IOConfig[OUT_FCONV_NEXT_OUT].Usage = YES_USE;
+	m_IOConfig[OUT_FCONV_NEXT_OUT].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FCONV_NEXT_OUT].IOAddr = 5003;
+	m_IOConfig[OUT_FCONV_NEXT_OUT].IOBit = 6;
+	m_IOConfig[OUT_FCONV_NEXT_OUT].IsOutput = 1;
+
+	// Rear Smema IO
+	m_IOConfig[IN_RCONV_PREV_IN].Usage = YES_USE;
+	m_IOConfig[IN_RCONV_PREV_IN].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RCONV_PREV_IN].IOAddr = 5004;
+	m_IOConfig[IN_RCONV_PREV_IN].IOBit = 2;
+
+	m_IOConfig[OUT_RCONV_PREV_OUT].Usage = YES_USE;
+	m_IOConfig[OUT_RCONV_PREV_OUT].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RCONV_PREV_OUT].IOAddr = 5004;
+	m_IOConfig[OUT_RCONV_PREV_OUT].IOBit = 2;
+	m_IOConfig[OUT_RCONV_PREV_OUT].IsOutput = 1;
+
+	m_IOConfig[IN_RCONV_NEXT_IN].Usage = YES_USE;
+	m_IOConfig[IN_RCONV_NEXT_IN].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RCONV_NEXT_IN].IOAddr = 5004;
+	m_IOConfig[IN_RCONV_NEXT_IN].IOBit = 3;
+
+	m_IOConfig[OUT_RCONV_NEXT_OUT].Usage = YES_USE;
+	m_IOConfig[OUT_RCONV_NEXT_OUT].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RCONV_NEXT_OUT].IOAddr = 5004;
+	m_IOConfig[OUT_RCONV_NEXT_OUT].IOBit = 3;
+	m_IOConfig[OUT_RCONV_NEXT_OUT].IsOutput = 1;
+}
+
+void CPowerIO::ReadTowerIO()
+{
+	//m_IOConfig[OUT_FTOWER_LAMP].Usage = YES_USE;
+	//m_IOConfig[OUT_FTOWER_LAMP].HWType = IO_WMX3_DIRECT;
+	//m_IOConfig[OUT_FTOWER_LAMP].IOAddr = 5001;
+	//m_IOConfig[OUT_FTOWER_LAMP].IOBit = 7;
+	//m_IOConfig[OUT_FTOWER_LAMP].IsOutput = 1;
+
+	m_IOConfig[OUT_FBUZZER].Usage = YES_USE;
+	m_IOConfig[OUT_FBUZZER].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FBUZZER].IOAddr = 5001;
+	m_IOConfig[OUT_FBUZZER].IOBit = 2;
+	m_IOConfig[OUT_FBUZZER].IsOutput = 1;
+
+	m_IOConfig[OUT_FLAMP_RED].Usage = YES_USE;
+	m_IOConfig[OUT_FLAMP_RED].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FLAMP_RED].IOAddr = 5001;
+	m_IOConfig[OUT_FLAMP_RED].IOBit = 3;
+	m_IOConfig[OUT_FLAMP_RED].IsOutput = 1;
+
+	m_IOConfig[OUT_FLAMP_YEL].Usage = YES_USE;
+	m_IOConfig[OUT_FLAMP_YEL].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FLAMP_YEL].IOAddr = 5001;
+	m_IOConfig[OUT_FLAMP_YEL].IOBit = 4;
+	m_IOConfig[OUT_FLAMP_YEL].IsOutput = 1;
+
+	m_IOConfig[OUT_FLAMP_GRN].Usage = YES_USE;
+	m_IOConfig[OUT_FLAMP_GRN].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FLAMP_GRN].IOAddr = 5001;
+	m_IOConfig[OUT_FLAMP_GRN].IOBit = 5;
+	m_IOConfig[OUT_FLAMP_GRN].IsOutput = 1;
+
+	//m_IOConfig[OUT_MACHINE_INSIDE_LAMP].Usage = YES_USE;
+	//m_IOConfig[OUT_MACHINE_INSIDE_LAMP].HWType = IO_WMX3_DIRECT;
+	//m_IOConfig[OUT_MACHINE_INSIDE_LAMP].IOAddr = 5001;
+	//m_IOConfig[OUT_MACHINE_INSIDE_LAMP].IOBit = 7;
+	//m_IOConfig[OUT_MACHINE_INSIDE_LAMP].IsOutput = 1;
+	
+}
+
+void CPowerIO::ReadFeederIO()
+{
+	m_IOConfig[IN_FFEEDER_READY01].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY01].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY01].IOAddr = 5036;
+	m_IOConfig[IN_FFEEDER_READY01].IOBit = 0;
+
+	m_IOConfig[IN_FFEEDER_READY02].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY02].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY02].IOAddr = 5036;
+	m_IOConfig[IN_FFEEDER_READY02].IOBit = 1;
+
+	m_IOConfig[IN_FFEEDER_READY03].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY03].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY03].IOAddr = 5036;
+	m_IOConfig[IN_FFEEDER_READY03].IOBit = 2;
+
+	m_IOConfig[IN_FFEEDER_READY04].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY04].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY04].IOAddr = 5036;
+	m_IOConfig[IN_FFEEDER_READY04].IOBit = 3;
+
+	m_IOConfig[IN_FFEEDER_READY05].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY05].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY05].IOAddr = 5036;
+	m_IOConfig[IN_FFEEDER_READY05].IOBit = 4;
+
+	m_IOConfig[IN_FFEEDER_READY06].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY06].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY06].IOAddr = 5036;
+	m_IOConfig[IN_FFEEDER_READY06].IOBit = 5;
+
+	m_IOConfig[IN_FFEEDER_READY07].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY07].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY07].IOAddr = 5036;
+	m_IOConfig[IN_FFEEDER_READY07].IOBit = 6;
+
+	m_IOConfig[IN_FFEEDER_READY08].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY08].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY08].IOAddr = 5036;
+	m_IOConfig[IN_FFEEDER_READY08].IOBit = 7;
+
+	m_IOConfig[IN_FFEEDER_READY09].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY09].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY09].IOAddr = 5037;
+	m_IOConfig[IN_FFEEDER_READY09].IOBit = 0;
+
+	m_IOConfig[IN_FFEEDER_READY10].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY10].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY10].IOAddr = 5037;
+	m_IOConfig[IN_FFEEDER_READY10].IOBit = 1;
+
+	m_IOConfig[IN_FFEEDER_READY11].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY11].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY11].IOAddr = 5037;
+	m_IOConfig[IN_FFEEDER_READY11].IOBit = 2;
+
+	m_IOConfig[IN_FFEEDER_READY12].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY12].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY12].IOAddr = 5037;
+	m_IOConfig[IN_FFEEDER_READY12].IOBit = 3;
+
+	m_IOConfig[IN_RFEEDER_READY01].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY01].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY01].IOAddr = 5040;
+	m_IOConfig[IN_RFEEDER_READY01].IOBit = 0;
+
+	m_IOConfig[IN_RFEEDER_READY02].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY02].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY02].IOAddr = 5040;
+	m_IOConfig[IN_RFEEDER_READY02].IOBit = 1;
+
+	m_IOConfig[IN_RFEEDER_READY03].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY03].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY03].IOAddr = 5040;
+	m_IOConfig[IN_RFEEDER_READY03].IOBit = 2;
+
+	m_IOConfig[IN_RFEEDER_READY04].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY04].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY04].IOAddr = 5040;
+	m_IOConfig[IN_RFEEDER_READY04].IOBit = 3;
+
+	m_IOConfig[IN_RFEEDER_READY05].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY05].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY05].IOAddr = 5040;
+	m_IOConfig[IN_RFEEDER_READY05].IOBit = 4;
+
+	m_IOConfig[IN_RFEEDER_READY06].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY06].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY06].IOAddr = 5040;
+	m_IOConfig[IN_RFEEDER_READY06].IOBit = 5;
+
+	m_IOConfig[IN_RFEEDER_READY07].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY07].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY07].IOAddr = 5040;
+	m_IOConfig[IN_RFEEDER_READY07].IOBit = 6;
+
+	m_IOConfig[IN_RFEEDER_READY08].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY08].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY08].IOAddr = 5040;
+	m_IOConfig[IN_RFEEDER_READY08].IOBit = 7;
+
+	m_IOConfig[IN_RFEEDER_READY09].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY09].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY09].IOAddr = 5041;
+	m_IOConfig[IN_RFEEDER_READY09].IOBit = 0;
+
+	m_IOConfig[IN_RFEEDER_READY10].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY10].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY10].IOAddr = 5041;
+	m_IOConfig[IN_RFEEDER_READY10].IOBit = 1;
+
+	m_IOConfig[IN_RFEEDER_READY11].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY11].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY11].IOAddr = 5041;
+	m_IOConfig[IN_RFEEDER_READY11].IOBit = 2;
+
+	m_IOConfig[IN_RFEEDER_READY12].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY12].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY12].IOAddr = 5041;
+	m_IOConfig[IN_RFEEDER_READY12].IOBit = 3;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE01].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE01].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE01].IOAddr = 5006;
+	m_IOConfig[OUT_FFEEDER_RELEASE01].IOBit = 0;
+	m_IOConfig[OUT_FFEEDER_RELEASE01].IsOutput = 1;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE02].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE02].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE02].IOAddr = 5006;
+	m_IOConfig[OUT_FFEEDER_RELEASE02].IOBit = 1;
+	m_IOConfig[OUT_FFEEDER_RELEASE02].IsOutput = 1;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE03].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE03].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE03].IOAddr = 5006;
+	m_IOConfig[OUT_FFEEDER_RELEASE03].IOBit = 2;
+	m_IOConfig[OUT_FFEEDER_RELEASE03].IsOutput = 1;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE04].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE04].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE04].IOAddr = 5006;
+	m_IOConfig[OUT_FFEEDER_RELEASE04].IOBit = 3;
+	m_IOConfig[OUT_FFEEDER_RELEASE04].IsOutput = 1;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE05].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE05].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE05].IOAddr = 5006;
+	m_IOConfig[OUT_FFEEDER_RELEASE05].IOBit = 4;
+	m_IOConfig[OUT_FFEEDER_RELEASE05].IsOutput = 1;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE06].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE06].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE06].IOAddr = 5006;
+	m_IOConfig[OUT_FFEEDER_RELEASE06].IOBit = 5;
+	m_IOConfig[OUT_FFEEDER_RELEASE06].IsOutput = 1;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE07].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE07].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE07].IOAddr = 5006;
+	m_IOConfig[OUT_FFEEDER_RELEASE07].IOBit = 6;
+	m_IOConfig[OUT_FFEEDER_RELEASE07].IsOutput = 1;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE08].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE08].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE08].IOAddr = 5006;
+	m_IOConfig[OUT_FFEEDER_RELEASE08].IOBit = 7;
+	m_IOConfig[OUT_FFEEDER_RELEASE08].IsOutput = 1;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE09].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE09].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE09].IOAddr = 5007;
+	m_IOConfig[OUT_FFEEDER_RELEASE09].IOBit = 0;
+	m_IOConfig[OUT_FFEEDER_RELEASE09].IsOutput = 1;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE10].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE10].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE10].IOAddr = 5007;
+	m_IOConfig[OUT_FFEEDER_RELEASE10].IOBit = 1;
+	m_IOConfig[OUT_FFEEDER_RELEASE10].IsOutput = 1;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE11].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE11].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE11].IOAddr = 5007;
+	m_IOConfig[OUT_FFEEDER_RELEASE11].IOBit = 2;
+	m_IOConfig[OUT_FFEEDER_RELEASE11].IsOutput = 1;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE12].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE12].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE12].IOAddr = 5007;
+	m_IOConfig[OUT_FFEEDER_RELEASE12].IOBit = 3;
+	m_IOConfig[OUT_FFEEDER_RELEASE12].IsOutput = 1;
+
+	//if (GetRearFeederUse() == 1) // Use
+	{
+		m_IOConfig[OUT_RFEEDER_RELEASE01].Usage = YES_USE;
+		m_IOConfig[OUT_RFEEDER_RELEASE01].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_RFEEDER_RELEASE01].IOAddr = 5008;
+		m_IOConfig[OUT_RFEEDER_RELEASE01].IOBit = 0;
+		m_IOConfig[OUT_RFEEDER_RELEASE01].IsOutput = 1;
+
+		m_IOConfig[OUT_RFEEDER_RELEASE02].Usage = YES_USE;
+		m_IOConfig[OUT_RFEEDER_RELEASE02].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_RFEEDER_RELEASE02].IOAddr = 5008;
+		m_IOConfig[OUT_RFEEDER_RELEASE02].IOBit = 1;
+		m_IOConfig[OUT_RFEEDER_RELEASE02].IsOutput = 1;
+
+		m_IOConfig[OUT_RFEEDER_RELEASE03].Usage = YES_USE;
+		m_IOConfig[OUT_RFEEDER_RELEASE03].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_RFEEDER_RELEASE03].IOAddr = 5008;
+		m_IOConfig[OUT_RFEEDER_RELEASE03].IOBit = 2;
+		m_IOConfig[OUT_RFEEDER_RELEASE03].IsOutput = 1;
+
+		m_IOConfig[OUT_RFEEDER_RELEASE04].Usage = YES_USE;
+		m_IOConfig[OUT_RFEEDER_RELEASE04].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_RFEEDER_RELEASE04].IOAddr = 5008;
+		m_IOConfig[OUT_RFEEDER_RELEASE04].IOBit = 3;
+		m_IOConfig[OUT_RFEEDER_RELEASE04].IsOutput = 1;
+
+		m_IOConfig[OUT_RFEEDER_RELEASE05].Usage = YES_USE;
+		m_IOConfig[OUT_RFEEDER_RELEASE05].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_RFEEDER_RELEASE05].IOAddr = 5008;
+		m_IOConfig[OUT_RFEEDER_RELEASE05].IOBit = 4;
+		m_IOConfig[OUT_RFEEDER_RELEASE05].IsOutput = 1;
+
+		m_IOConfig[OUT_RFEEDER_RELEASE06].Usage = YES_USE;
+		m_IOConfig[OUT_RFEEDER_RELEASE06].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_RFEEDER_RELEASE06].IOAddr = 5008;
+		m_IOConfig[OUT_RFEEDER_RELEASE06].IOBit = 5;
+		m_IOConfig[OUT_RFEEDER_RELEASE06].IsOutput = 1;
+
+		m_IOConfig[OUT_RFEEDER_RELEASE07].Usage = YES_USE;
+		m_IOConfig[OUT_RFEEDER_RELEASE07].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_RFEEDER_RELEASE07].IOAddr = 5008;
+		m_IOConfig[OUT_RFEEDER_RELEASE07].IOBit = 6;
+		m_IOConfig[OUT_RFEEDER_RELEASE07].IsOutput = 1;
+
+		m_IOConfig[OUT_RFEEDER_RELEASE08].Usage = YES_USE;
+		m_IOConfig[OUT_RFEEDER_RELEASE08].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_RFEEDER_RELEASE08].IOAddr = 5008;
+		m_IOConfig[OUT_RFEEDER_RELEASE08].IOBit = 7;
+		m_IOConfig[OUT_RFEEDER_RELEASE08].IsOutput = 1;
+
+		m_IOConfig[OUT_RFEEDER_RELEASE09].Usage = YES_USE;
+		m_IOConfig[OUT_RFEEDER_RELEASE09].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_RFEEDER_RELEASE09].IOAddr = 5009;
+		m_IOConfig[OUT_RFEEDER_RELEASE09].IOBit = 0;
+		m_IOConfig[OUT_RFEEDER_RELEASE09].IsOutput = 1;
+
+		m_IOConfig[OUT_RFEEDER_RELEASE10].Usage = YES_USE;
+		m_IOConfig[OUT_RFEEDER_RELEASE10].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_RFEEDER_RELEASE10].IOAddr = 5009;
+		m_IOConfig[OUT_RFEEDER_RELEASE10].IOBit = 1;
+		m_IOConfig[OUT_RFEEDER_RELEASE10].IsOutput = 1;
+
+		m_IOConfig[OUT_RFEEDER_RELEASE11].Usage = YES_USE;
+		m_IOConfig[OUT_RFEEDER_RELEASE11].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_RFEEDER_RELEASE11].IOAddr = 5009;
+		m_IOConfig[OUT_RFEEDER_RELEASE11].IOBit = 2;
+		m_IOConfig[OUT_RFEEDER_RELEASE11].IsOutput = 1;
+
+		m_IOConfig[OUT_RFEEDER_RELEASE12].Usage = YES_USE;
+		m_IOConfig[OUT_RFEEDER_RELEASE12].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_RFEEDER_RELEASE12].IOAddr = 5009;
+		m_IOConfig[OUT_RFEEDER_RELEASE12].IOBit = 3;
+		m_IOConfig[OUT_RFEEDER_RELEASE12].IsOutput = 1;
+	}
+}
+
+void CPowerIO::ReadLaserIO()
+{
+	m_IOConfig[OUT_F1ST_LASER_ON].Usage = YES_USE;
+	m_IOConfig[OUT_F1ST_LASER_ON].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_F1ST_LASER_ON].IOAddr = 5004;
+	m_IOConfig[OUT_F1ST_LASER_ON].IOBit = 4;
+	m_IOConfig[OUT_F1ST_LASER_ON].IsOutput = 1;
+
+	m_IOConfig[OUT_R1ST_LASER_ON].Usage = YES_USE;
+	m_IOConfig[OUT_R1ST_LASER_ON].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_R1ST_LASER_ON].IOAddr = 5004;
+	m_IOConfig[OUT_R1ST_LASER_ON].IOBit = 5;
+	m_IOConfig[OUT_R1ST_LASER_ON].IsOutput = 1;
+
+	//if (GetRearFeederUse() == NO_USE)
+	{
+		m_IOConfig[OUT_FCAM1_LASER_ON].Usage = YES_USE;
+		m_IOConfig[OUT_FCAM1_LASER_ON].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_FCAM1_LASER_ON].IOAddr = 5004;
+		m_IOConfig[OUT_FCAM1_LASER_ON].IOBit = 0;
+		m_IOConfig[OUT_FCAM1_LASER_ON].IsOutput = 1;
+
+		m_IOConfig[OUT_FCAM2_LASER_ON].Usage = YES_USE;
+		m_IOConfig[OUT_FCAM2_LASER_ON].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_FCAM2_LASER_ON].IOAddr = 5004;
+		m_IOConfig[OUT_FCAM2_LASER_ON].IOBit = 1;
+		m_IOConfig[OUT_FCAM2_LASER_ON].IsOutput = 1;
+
+		m_IOConfig[OUT_FCAM3_LASER_ON].Usage = YES_USE;
+		m_IOConfig[OUT_FCAM3_LASER_ON].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_FCAM3_LASER_ON].IOAddr = 5004;
+		m_IOConfig[OUT_FCAM3_LASER_ON].IOBit = 2;
+		m_IOConfig[OUT_FCAM3_LASER_ON].IsOutput = 1;
+
+		m_IOConfig[OUT_FCAM4_LASER_ON].Usage = YES_USE;
+		m_IOConfig[OUT_FCAM4_LASER_ON].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_FCAM4_LASER_ON].IOAddr = 5004;
+		m_IOConfig[OUT_FCAM4_LASER_ON].IOBit = 3;
+		m_IOConfig[OUT_FCAM4_LASER_ON].IsOutput = 1;
+
+		m_IOConfig[OUT_FCAM5_LASER_ON].Usage = YES_USE;
+		m_IOConfig[OUT_FCAM5_LASER_ON].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_FCAM5_LASER_ON].IOAddr = 5004;
+		m_IOConfig[OUT_FCAM5_LASER_ON].IOBit = 4;
+		m_IOConfig[OUT_FCAM5_LASER_ON].IsOutput = 1;
+
+		m_IOConfig[OUT_FCAM6_LASER_ON].Usage = YES_USE;
+		m_IOConfig[OUT_FCAM6_LASER_ON].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_FCAM6_LASER_ON].IOAddr = 5004;
+		m_IOConfig[OUT_FCAM6_LASER_ON].IOBit = 5;
+		m_IOConfig[OUT_FCAM6_LASER_ON].IsOutput = 1;
+
+		m_IOConfig[OUT_RCAM1_LASER_ON].Usage = YES_USE;
+		m_IOConfig[OUT_RCAM1_LASER_ON].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_RCAM1_LASER_ON].IOAddr = 5005;
+		m_IOConfig[OUT_RCAM1_LASER_ON].IOBit = 0;
+		m_IOConfig[OUT_RCAM1_LASER_ON].IsOutput = 1;
+
+		m_IOConfig[OUT_RCAM2_LASER_ON].Usage = YES_USE;
+		m_IOConfig[OUT_RCAM2_LASER_ON].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_RCAM2_LASER_ON].IOAddr = 5005;
+		m_IOConfig[OUT_RCAM2_LASER_ON].IOBit = 1;
+		m_IOConfig[OUT_RCAM2_LASER_ON].IsOutput = 1;
+
+		m_IOConfig[OUT_RCAM3_LASER_ON].Usage = YES_USE;
+		m_IOConfig[OUT_RCAM3_LASER_ON].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_RCAM3_LASER_ON].IOAddr = 5005;
+		m_IOConfig[OUT_RCAM3_LASER_ON].IOBit = 2;
+		m_IOConfig[OUT_RCAM3_LASER_ON].IsOutput = 1;
+
+		m_IOConfig[OUT_RCAM4_LASER_ON].Usage = YES_USE;
+		m_IOConfig[OUT_RCAM4_LASER_ON].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_RCAM4_LASER_ON].IOAddr = 5005;
+		m_IOConfig[OUT_RCAM4_LASER_ON].IOBit = 3;
+		m_IOConfig[OUT_RCAM4_LASER_ON].IsOutput = 1;
+	}
+}
+
+void CPowerIO::ReadPusherPlateIO()
+{
+	m_IOConfig[OUT_FCONV_WORK1_PUSH_UP].Usage = YES_USE;
+	m_IOConfig[OUT_FCONV_WORK1_PUSH_UP].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FCONV_WORK1_PUSH_UP].IOAddr = 1602;
+	m_IOConfig[OUT_FCONV_WORK1_PUSH_UP].IOBit = 1;
+	m_IOConfig[OUT_FCONV_WORK1_PUSH_UP].IsOutput = 1;
+
+	m_IOConfig[OUT_FCONV_WORK1_PUSH_DN].Usage = YES_USE;
+	m_IOConfig[OUT_FCONV_WORK1_PUSH_DN].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FCONV_WORK1_PUSH_DN].IOAddr = 1602;
+	m_IOConfig[OUT_FCONV_WORK1_PUSH_DN].IOBit = 2;
+	m_IOConfig[OUT_FCONV_WORK1_PUSH_DN].IsOutput = 1;
+
+	m_IOConfig[IN_FCONV_WORK1_PUSH_UP].Usage = YES_USE;
+	m_IOConfig[IN_FCONV_WORK1_PUSH_UP].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FCONV_WORK1_PUSH_UP].IOAddr = 1602;
+	m_IOConfig[IN_FCONV_WORK1_PUSH_UP].IOBit = 3;
+
+	m_IOConfig[IN_FCONV_WORK1_PUSH_DN].Usage = YES_USE;
+	m_IOConfig[IN_FCONV_WORK1_PUSH_DN].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FCONV_WORK1_PUSH_DN].IOAddr = 1602;
+	m_IOConfig[IN_FCONV_WORK1_PUSH_DN].IOBit = 4;
+}
+
+void CPowerIO::ReadFormingDRBCoilIO()
+{
+	m_IOConfig[OUT_FORMING_1ST_LOCK].Usage = YES_USE;
+	m_IOConfig[OUT_FORMING_1ST_LOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FORMING_1ST_LOCK].IOAddr = 5001;
+	m_IOConfig[OUT_FORMING_1ST_LOCK].IOBit = 7;
+	m_IOConfig[OUT_FORMING_1ST_LOCK].IsOutput = 1;
+	m_IOConfig[OUT_FORMING_1ST_LOCK].Description = _T("1st Forming Lock Sol");
+
+	m_IOConfig[OUT_FORMING_2ND_UNLOCK].Usage = YES_USE;
+	m_IOConfig[OUT_FORMING_2ND_UNLOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FORMING_2ND_UNLOCK].IOAddr = 5003;
+	m_IOConfig[OUT_FORMING_2ND_UNLOCK].IOBit = 7;
+	m_IOConfig[OUT_FORMING_2ND_UNLOCK].IsOutput = 1;
+	m_IOConfig[OUT_FORMING_2ND_UNLOCK].Description = _T("1st Forming Unlock Sol");
+
+
+	m_IOConfig[IN_FORMING_1ST_LOCK].Usage = YES_USE;
+	m_IOConfig[IN_FORMING_1ST_LOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FORMING_1ST_LOCK].IOAddr = 5029;
+	m_IOConfig[IN_FORMING_1ST_LOCK].IOBit = 4;
+	m_IOConfig[IN_FORMING_1ST_LOCK].Description = _T("1st Forming Lock Sensor");
+
+
+	m_IOConfig[IN_FORMING_1ST_UNLOCK].Usage = YES_USE;
+	m_IOConfig[IN_FORMING_1ST_UNLOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FORMING_1ST_UNLOCK].IOAddr = 5029;
+	m_IOConfig[IN_FORMING_1ST_UNLOCK].IOBit = 5;
+	m_IOConfig[IN_FORMING_1ST_UNLOCK].Description = _T("1st Forming Unlock Sensor");
+
+	m_IOConfig[IN_FORMING_2ND_LOCK].Usage = YES_USE;
+	m_IOConfig[IN_FORMING_2ND_LOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FORMING_2ND_LOCK].IOAddr = 5029;
+	m_IOConfig[IN_FORMING_2ND_LOCK].IOBit = 6;
+	m_IOConfig[IN_FORMING_2ND_LOCK].Description = _T("2nd Forming Lock Sensor");
+
+						  
+	m_IOConfig[IN_FORMING_2ND_UNLOCK].Usage = YES_USE;
+	m_IOConfig[IN_FORMING_2ND_UNLOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FORMING_2ND_UNLOCK].IOAddr = 5029;
+	m_IOConfig[IN_FORMING_2ND_UNLOCK].IOBit = 7;
+	m_IOConfig[IN_FORMING_2ND_UNLOCK].Description = _T("2nd Forming Unlock Sensor");
+
+	m_IOConfig[IN_FORMING_EXIST].Usage = YES_USE;
+	m_IOConfig[IN_FORMING_EXIST].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FORMING_EXIST].IOAddr = 5003;
+	m_IOConfig[IN_FORMING_EXIST].IOBit = 6;
+	m_IOConfig[IN_FORMING_EXIST].Description = _T("Forming Part Detecting Sensor");
+
+}
+
+void CPowerIO::ReadIOMapRSA1st()
+{
+	// input 1
+	EditIOAddress(5000, 0, IN_FANC_CLAMP_LOCK);
+	EditIOAddress(5000, 1, IN_FANC_CLAMP_UNLOCK);
+	EditIOAddress(5000, 2, IN_FANC_BASE_UP);
+	EditIOAddress(5000, 3, IN_FANC_BASE_DN);
+	EditIOAddress(5000, 4, IN_FDOOR_KEY_UNLOCK);
+	EditIOAddress(5000, 5, IN_FDOOR_KEY_OUT);
+	EditIOAddress(5000, 6, IN_FRONT_AREA_SENSOR);
+	EditIOAddress(5000, 7, IN_FEMERGENCY);
+
+	EditIOAddress(5001, 0, IN_STOP_PANEL_KEY);
+	EditIOAddress(5001, 1, IN_FDOOR_LOCK_PANEL_KEY);
+	EditIOAddress(5001, 2, IN_START_PANEL_KEY);
+	EditIOAddress(5001, 3, IN_RESET_PANEL_KEY);
+	EditIOAddress(5001, 4, IN_AIR_PRESS_LOW);
+	EditIOAddress(5001, 5, IN_SAFETY_ON);
+	EditIOAddress(5001, 6, IN_LOTO_KEY_ON);
+	//EditIOAddress(5001, 7, );
+
+	// input 2
+	EditIOAddress(5002, 0, IN_RANC_CLAMP_LOCK);
+	EditIOAddress(5002, 1, IN_RANC_CLAMP_UNLOCK);
+	EditIOAddress(5002, 2, IN_RANC_BASE_UP);
+	EditIOAddress(5002, 3, IN_RANC_BASE_DN);
+	EditIOAddress(5002, 4, IN_RDOOR_KEY_UNLOCK);
+	EditIOAddress(5002, 5, IN_RDOOR_KEY_OUT);
+	EditIOAddress(5002, 6, IN_REAR_AREA_SENSOR);
+	EditIOAddress(5002, 7, IN_REMERGENCY);
+
+	EditIOAddress(5003, 0, IN_FCONV_PREV_IN);
+	EditIOAddress(5003, 1, IN_FCONV_NEXT_IN);
+	EditIOAddress(5003, 2, IN_RCONV_PREV_IN);
+	EditIOAddress(5003, 3, IN_RCONV_NEXT_IN);
+	EditIOAddress(5003, 4, IN_FRONT_AREA_SENSOR_2ND);
+	EditIOAddress(5003, 5, IN_REAR_AREA_SENSOR_2ND);
+	//EditIOAddress(5003, 6, );
+	//EditIOAddress(5003, 7, );
+
+
+	// output 1
+	EditIOAddress(5000, 0, OUT_FANC_CLAMP_UNLOCK);
+	EditIOAddress(5000, 1, OUT_FANC_BASE_UP);
+	EditIOAddress(5000, 2, OUT_RANC_CLAMP_UNLOCK);
+	EditIOAddress(5000, 3, OUT_RANC_BASE_UP);
+	EditIOAddress(5000, 4, OUT_FDOOR_KEY_LOCK);
+	EditIOAddress(5000, 5, OUT_RDOOR_KEY_LOCK);
+	EditIOAddress(5000, 6, OUT_STOP_PANEL_LED);
+	EditIOAddress(5000, 7, OUT_FDOOR_LOCK_PANEL_LED);
+
+	EditIOAddress(5001, 0, OUT_START_PANEL_LED);
+	EditIOAddress(5001, 1, OUT_RESET_PANEL_LED);
+	EditIOAddress(5001, 2, OUT_FBUZZER);
+	EditIOAddress(5001, 3, OUT_FLAMP_RED);
+	EditIOAddress(5001, 4, OUT_FLAMP_YEL);
+	EditIOAddress(5001, 5, OUT_FLAMP_GRN);
+	EditIOAddress(5001, 6, OUT_MOTOR_POWER);
+	//EditIOAddress(5001, 7, );
+
+
+	// output 2
+	EditIOAddress(5002, 0, OUT_FHEAD1_BLO);
+	EditIOAddress(5002, 1, OUT_FHEAD1_SUC);
+	EditIOAddress(5002, 2, OUT_FHEAD2_BLO);
+	EditIOAddress(5002, 3, OUT_FHEAD2_SUC);
+	EditIOAddress(5002, 4, OUT_FHEAD3_BLO);
+	EditIOAddress(5002, 5, OUT_FHEAD3_SUC);
+	EditIOAddress(5002, 6, OUT_FHEAD4_BLO);
+	EditIOAddress(5002, 7, OUT_FHEAD4_SUC);
+
+	EditIOAddress(5003, 0, OUT_FHEAD5_BLO);
+	EditIOAddress(5003, 1, OUT_FHEAD5_SUC);
+	EditIOAddress(5003, 2, OUT_FHEAD6_BLO);
+	EditIOAddress(5003, 3, OUT_FHEAD6_SUC);
+	EditIOAddress(5003, 4, OUT_FHEAD_ZHMD_OFF);
+	EditIOAddress(5003, 5, OUT_FCONV_PREV_OUT);
+	EditIOAddress(5003, 6, OUT_FCONV_NEXT_OUT);
+	//EditIOAddress(5003, 7, );
+
+
+	// flv Output 3
+	EditIOAddress(5004, 0, OUT_FCAM1_LASER_ON);
+	EditIOAddress(5004, 1, OUT_FCAM2_LASER_ON);
+	EditIOAddress(5004, 2, OUT_FCAM3_LASER_ON);
+	EditIOAddress(5004, 3, OUT_FCAM4_LASER_ON);
+	EditIOAddress(5004, 4, OUT_FCAM5_LASER_ON);
+	EditIOAddress(5004, 5, OUT_FCAM6_LASER_ON);
+	//EditIOAddress(5004, 6, );
+	//EditIOAddress(5004, 7, );
+
+	EditIOAddress(5005, 0, OUT_RCAM1_LASER_ON);
+	EditIOAddress(5005, 1, OUT_RCAM2_LASER_ON);
+	EditIOAddress(5005, 2, OUT_RCAM3_LASER_ON);
+	EditIOAddress(5005, 3, OUT_RCAM4_LASER_ON);
+	EditIOAddress(5005, 4, OUT_RCAM5_LASER_ON);
+	EditIOAddress(5005, 5, OUT_RCAM6_LASER_ON);
+	//EditIOAddress(5005, 6, );
+	//EditIOAddress(5005, 7, );
+
+		// analogue 1
+	EditIOAddress(5004, 0, IN_FHEAD1_ANALOG);
+	EditIOAddress(5006, 0, IN_FHEAD2_ANALOG);
+	EditIOAddress(5008, 0, IN_FHEAD3_ANALOG);
+	//EditIOAddress(5010, 0, main air level);
+	EditIOAddress(5012, 0, IN_FHEAD4_ANALOG);
+	EditIOAddress(5014, 0, IN_FHEAD5_ANALOG);
+	EditIOAddress(5016, 0, IN_FHEAD6_ANALOG);
+	EditIOAddress(5018, 0, IN_FHEAD_ZHMD_HEIGHT);
+
+	// RTD analogue 5
+	EditIOAddress(5020, 0, IN_FX_LMTEMP_LOW);
+	EditIOAddress(5022, 0, IN_FY1_LMTEMP_LOW);
+	EditIOAddress(5024, 0, IN_FY2_LMTEMP_LOW);
+
+	// f feeder input 1
+	EditIOAddress(5028, 0, IN_FFEEDER_READY01);
+	EditIOAddress(5028, 1, IN_FFEEDER_READY02);
+	EditIOAddress(5028, 2, IN_FFEEDER_READY03);
+	EditIOAddress(5028, 3, IN_FFEEDER_READY04);
+	EditIOAddress(5028, 4, IN_FFEEDER_READY05);
+	EditIOAddress(5028, 5, IN_FFEEDER_READY06);
+	EditIOAddress(5028, 6, IN_FFEEDER_READY07);
+	EditIOAddress(5028, 7, IN_FFEEDER_READY08);
+
+	EditIOAddress(5029, 0, IN_FFEEDER_READY09);
+	EditIOAddress(5029, 1, IN_FFEEDER_READY10);
+	EditIOAddress(5029, 2, IN_FFEEDER_READY11);
+	EditIOAddress(5029, 3, IN_FFEEDER_READY12);
+
+	// f feeder output 1
+	EditIOAddress(5006, 0, OUT_FFEEDER_RELEASE01);
+	EditIOAddress(5006, 1, OUT_FFEEDER_RELEASE02);
+	EditIOAddress(5006, 2, OUT_FFEEDER_RELEASE03);
+	EditIOAddress(5006, 3, OUT_FFEEDER_RELEASE04);
+	EditIOAddress(5006, 4, OUT_FFEEDER_RELEASE05);
+	EditIOAddress(5006, 5, OUT_FFEEDER_RELEASE06);
+	EditIOAddress(5006, 6, OUT_FFEEDER_RELEASE07);
+	EditIOAddress(5006, 7, OUT_FFEEDER_RELEASE08);
+
+	EditIOAddress(5007, 0, OUT_FFEEDER_RELEASE09);
+	EditIOAddress(5007, 1, OUT_FFEEDER_RELEASE10);
+	EditIOAddress(5007, 2, OUT_FFEEDER_RELEASE11);
+	EditIOAddress(5007, 3, OUT_FFEEDER_RELEASE12);
+
+	// r feeder input 1
+	EditIOAddress(5030, 0, IN_RFEEDER_READY01);
+	EditIOAddress(5030, 1, IN_RFEEDER_READY02);
+	EditIOAddress(5030, 2, IN_RFEEDER_READY03);
+	EditIOAddress(5030, 3, IN_RFEEDER_READY04);
+	EditIOAddress(5030, 4, IN_RFEEDER_READY05);
+	EditIOAddress(5030, 5, IN_RFEEDER_READY06);
+	EditIOAddress(5030, 6, IN_RFEEDER_READY07);
+	EditIOAddress(5030, 7, IN_RFEEDER_READY08);
+
+	EditIOAddress(5031, 0, IN_RFEEDER_READY09);
+	EditIOAddress(5031, 1, IN_RFEEDER_READY10);
+	EditIOAddress(5031, 2, IN_RFEEDER_READY11);
+	EditIOAddress(5031, 3, IN_RFEEDER_READY12);
+
+	// r feeder output 1
+	EditIOAddress(5008, 0, OUT_RFEEDER_RELEASE01);
+	EditIOAddress(5008, 1, OUT_RFEEDER_RELEASE02);
+	EditIOAddress(5008, 2, OUT_RFEEDER_RELEASE03);
+	EditIOAddress(5008, 3, OUT_RFEEDER_RELEASE04);
+	EditIOAddress(5008, 4, OUT_RFEEDER_RELEASE05);
+	EditIOAddress(5008, 5, OUT_RFEEDER_RELEASE06);
+	EditIOAddress(5008, 6, OUT_RFEEDER_RELEASE07);
+	EditIOAddress(5008, 7, OUT_RFEEDER_RELEASE08);
+
+	EditIOAddress(5009, 0, OUT_RFEEDER_RELEASE09);
+	EditIOAddress(5009, 1, OUT_RFEEDER_RELEASE10);
+	EditIOAddress(5009, 2, OUT_RFEEDER_RELEASE11);
+	EditIOAddress(5009, 3, OUT_RFEEDER_RELEASE12);
+
+	CString strFunc(__func__);
+	TRACE(_T("[PWR]  %s complete.\n"), strFunc);
+}
+
+void CPowerIO::EditIOAddress(long addr, unsigned char bit, long ioNum)
+{
+	if (0 <= ioNum && ioNum < MAXIODEFINE)
+	{
+		m_IOConfig[ioNum].IOAddr = addr;
+		m_IOConfig[ioNum].IOBit = bit;
+	}
+}
+
+
+long CPowerIO::GetIOUsage(long No)
+{
+	long Usage = NO_USE;
+	if (No < MAXIODEFINE)
+	{
+		Usage = m_IOConfig[No].Usage;
+	}
+	return Usage;
+}
+
+long CPowerIO::GetIOType(long No)
+{
+	long Type = IO_UNKNOWN;
+	if (No < MAXIODEFINE)
+	{
+		Type = m_IOConfig[No].HWType;
+	}
+	return Type;
+}
+
+long CPowerIO::GetIOAddr(long No)
+{
+	long Addr = IO_NOUSE;
+	if (No < MAXIODEFINE)
+	{
+		Addr = m_IOConfig[No].IOAddr;
+	}
+	return Addr;
+}
+
+char CPowerIO::GetIOBit(long No)
+{
+	char IOBit = 0;
+	if (No < MAXIODEFINE)
+	{
+		IOBit = m_IOConfig[No].IOBit;
+	}
+	return IOBit;
+}
+
+long CPowerIO::IsOutput(long No)
+{
+	long IsOutput = NO_USE;
+	if (No < MAXIODEFINE)
+	{
+		IsOutput = m_IOConfig[No].IsOutput;
+	}
+	return IsOutput;
+}
+
+void CPowerIO::SetAnalogInput(long No, long Level)
+{
+//	long HeightMeasurement = 25470;
+	LONGLONG zerolevel;
+	double temp;
+	IOStruct oldIO = m_IOConfig[No];
+
+	if (No < MAXIODEFINE)
+	{
+		if (GetIOUsage(No) == YES_USE)
+		{
+			m_IOConfig[No].AnalogInput = Level;
+			if (GetIOType(No) == IO_WMX3_ANALOG_RTD)
+			{
+				m_IOConfig[No].Temperature = m_IOConfig[No].AnalogInput / 10.0;
+				if (gcPowerLog->IsShowIoLog() == true)
+				{
+					TRACE(_T("[PWR] SetAnalogInput No:%d Type:%d Input:%d Convert to Temperature:%.3f\n"),
+						No, GetIOType(No),
+						m_IOConfig[No].AnalogInput, m_IOConfig[No].Temperature);
+				}
+			}
+			else if (GetIOType(No) == IO_WMX3_ANALOG_SICK)
+			{
+
+				if (No == IN_FHEAD_ZHMD_HEIGHT)
+				{
+					zerolevel = gcPowerCalibrationData->GetHMZero(FRONT_GANTRY);
+				}
+				else
+				{
+					zerolevel = gcPowerCalibrationData->GetHMZero(REAR_GANTRY);
+				}
+
+				//m_IOConfig[No].Height = (double)((zerolevel - m_IOConfig[No].AnalogInput) / 27648) * MAX_SICK_RANGE;
+				temp = (double)(zerolevel - m_IOConfig[No].AnalogInput);
+
+				if (m_IOVer == 2)
+				{
+					m_IOConfig[No].Height = temp / 100.0;
+				}
+				else
+				{
+					m_IOConfig[No].Height = (temp * MAX_SICK_RANGE) / 27648.0;
+				}
+
+				if (gcPowerLog->IsShowIoLog() == true)
+				{
+					TRACE(_T("[PWR] SetAnalogInput No:%d Type:%d Input:%d Convert to Height:%.3f\n"),
+						No, GetIOType(No),
+						m_IOConfig[No].AnalogInput, m_IOConfig[No].Height);
+				}
+			}
+			else if (GetIOType(No) == IO_WMX3_ANALOG_EJECTOR)
+			{
+				m_IOConfig[No].Level = (m_IOConfig[No].AnalogInput * 256) / MAX_EJECTOR_RANGE;
+				if (gcPowerLog->IsShowIoLog() == true)
+				{
+					TRACE(_T("[PWR] SetAnalogInput No:%d Type:%d Input:%d Convert to Level:%d\n"),
+						No, GetIOType(No),
+						m_IOConfig[No].AnalogInput, m_IOConfig[No].Level);
+				}
+			}
+			else
+			{
+				m_IOConfig[No].Height = 0.0;
+				m_IOConfig[No].Level = 0;
+			}
+		}
+	}
+}
+
+long CPowerIO::GetAnalogLevel(long IONum)
+{
+	long Level = 0;
+
+	if (IONum != IO_NOUSE)
+	{
+		Level = m_IOConfig[IONum].Level;
+	}
+	return Level;
+}
+
+long CPowerIO::GetAnalogInput(long No)
+{
+	long input = 0;
+	if (No < MAXIODEFINE)
+	{
+		input = m_IOConfig[No].AnalogInput;
+	}	
+
+	return input;
+}
+
+long CPowerIO::GetAnalogLevel(long Gantry, long HeadNo)
+{
+	long Level = 0, IONum = IO_NOUSE;
+	if(Gantry == FRONT_GANTRY)
+	{
+		switch (HeadNo)
+		{
+		case TBL_HEAD1:
+			IONum = IN_FHEAD1_ANALOG;
+			break;
+		case TBL_HEAD2:
+			IONum = IN_FHEAD2_ANALOG;
+			break;
+		case TBL_HEAD3:
+			IONum = IN_FHEAD3_ANALOG;
+			break;
+		case TBL_HEAD4:
+			IONum = IN_FHEAD4_ANALOG;
+			break;
+		case TBL_HEAD5:
+			IONum = IN_FHEAD5_ANALOG;
+			break;
+		case TBL_HEAD6:
+			IONum = IN_FHEAD6_ANALOG;
+			break;
+		}
+		if (IONum != IO_NOUSE)
+		{
+			Level = m_IOConfig[IONum].Level;
+		}
+	}
+	else if (Gantry == REAR_GANTRY)
+	{
+		switch (HeadNo)
+		{
+		case TBL_HEAD1:
+			IONum = IN_RHEAD1_ANALOG;
+			break;
+		case TBL_HEAD2:
+			IONum = IN_RHEAD2_ANALOG;
+			break;
+		case TBL_HEAD3:
+			IONum = IN_RHEAD3_ANALOG;
+			break;
+		case TBL_HEAD4:
+			IONum = IN_RHEAD4_ANALOG;
+			break;
+		case TBL_HEAD5:
+			IONum = IN_RHEAD5_ANALOG;
+			break;
+		case TBL_HEAD6:
+			IONum = IN_RHEAD6_ANALOG;
+			break;
+		}
+		if (IONum != IO_NOUSE)
+		{
+			Level = m_IOConfig[IONum].Level;
+		}
+	}
+	return Level;
+}
+
+double CPowerIO::GetHeight(long Gantry)
+{
+	double HeightMeasurement = 0.0;
+	if(Gantry == FRONT_GANTRY)
+	{
+		HeightMeasurement = m_IOConfig[IN_FHEAD_ZHMD_HEIGHT].Height;
+		if (abs(HeightMeasurement) > MAX_SICK_RANGE)
+		{
+			HeightMeasurement = 9999.0;
+		}
+	}
+	else if (Gantry == REAR_GANTRY)
+	{
+		HeightMeasurement = m_IOConfig[IN_RHEAD_ZHMD_HEIGHT].Height;
+		if (abs(HeightMeasurement) > MAX_SICK_RANGE)
+		{
+			HeightMeasurement = 9999.0;
+		}
+	}
+	return HeightMeasurement;
+}
+
+double CPowerIO::GetTemperature(CString strAxis)
+{
+	double Temperature = 25.0;
+	if (strAxis.CompareNoCase(_T("FX")) == 0)
+	{
+		Temperature = m_IOConfig[IN_FX_LMTEMP_LOW].Temperature;
+	}
+	else if (strAxis.CompareNoCase(_T("FY1")) == 0)
+	{
+		Temperature = m_IOConfig[IN_FY1_LMTEMP_LOW].Temperature;
+	}
+	else if (strAxis.CompareNoCase(_T("FY2")) == 0)
+	{
+		Temperature = m_IOConfig[IN_FY2_LMTEMP_LOW].Temperature;
+	}
+	else if (strAxis.CompareNoCase(_T("RX")) == 0)
+	{
+		Temperature = m_IOConfig[IN_RX_LMTEMP_LOW].Temperature;
+	}
+	else if (strAxis.CompareNoCase(_T("RY1")) == 0)
+	{
+		Temperature = m_IOConfig[IN_RY1_LMTEMP_LOW].Temperature;
+	}
+	else if (strAxis.CompareNoCase(_T("RY2")) == 0)
+	{
+		Temperature = m_IOConfig[IN_RY2_LMTEMP_LOW].Temperature;
+	}
+	return Temperature;
+}
+
+UBYTE CPowerIO::di1(long no)
+{
+	UBYTE bStatus = INOFF;
+	if (no == IO_NOUSE)
+	{
+		return INOFF;
+	}
+	if (no >= MAXIODEFINE)
+	{
+		return INOFF;
+	}
+	if (m_IOConfig[no].HWType == IO_UNKNOWN) // IO No Use
+	{
+		return INOFF;
+	}
+
+	if (m_IOConfig[no].Usage == NO_USE) // IO No Use
+	{
+		return INOFF;
+	}
+
+	else if (m_IOConfig[no].HWType == IO_WMX3_DIRECT) // WMX3 IO
+	{
+		if (gioMapStruct.input[m_IOConfig[no].IOAddr][m_IOConfig[no].IOBit] == true)
+		{
+			bStatus = INON;
+		}
+		else
+		{
+			bStatus = INOFF;
+		}
+
+		if (GetWorkExistSkip() == 1)
+		{
+			if (no == IN_FCONV_WORK1_EXIST || no == IN_FCONV_ENTRY_EXIST || no == IN_FCONV_EXIT_EXIST)
+			//if (no == IN_FCONV_WORK1_EXIST || no == IN_FCONV_ENTRY_EXIST)
+			//if (no == IN_FCONV_WORK1_EXIST)
+			{
+				bStatus = INON;
+			}
+		}
+
+		//if (GetFirstPickup() == 1)
+		//{
+		//	if (no >= IN_FFEEDER_READY01 && no <= IN_FFEEDER_READY16)
+		//	{
+		//		bStatus = INON;
+		//	}
+		//	if (no >= IN_RFEEDER_READY01 && no <= IN_RFEEDER_READY16)
+		//	{
+		//		bStatus = INON;
+		//	}
+		//}
+		 
+		 
+		//if (gcPowerLog->IsShowIoLog() == true)
+		//{
+		//	TRACE(_T("[PWR] di1 No:%04d IOAddr:%04d IOBit:%02d Status:%d\n"), no, m_IOConfig[no].IOAddr, m_IOConfig[no].IOBit, bStatus);
+		//}
+	}
+	else if (m_IOConfig[no].HWType == IO_SIMULATION) // Simulation IO
+	{
+		if (m_Simulation[no] == true)
+		{
+			bStatus = INON;
+		}
+		else
+		{
+			bStatus = INOFF;
+		}
+		//if (gcPowerLog->IsShowIoLog() == true)
+		//{
+		//	TRACE(_T("[PWR] Simulation di1 No:%04d Status:%d\n"), no, bStatus);
+		//}
+	}
+	return bStatus;
+}
+
+ULONGLONG CPowerIO::di1ElapsedTime(long no, long onoff)
+{
+	ULONGLONG time = 0;
+	if (no == IO_NOUSE)
+	{
+		return 0;
+	}
+	if (no >= MAXIODEFINE)
+	{
+		return 0;
+	}
+	if (m_IOConfig[no].HWType == IO_UNKNOWN) // IO No Use
+	{
+		return 0;
+	}
+
+	if (m_IOConfig[no].Usage == NO_USE) // IO No Use
+	{
+		return 0;
+	}
+
+	else if (m_IOConfig[no].HWType == IO_WMX3_DIRECT) // WMX3 IO
+	{
+		if (onoff == INON && di1(no) == INON)
+		{
+			time = _time_elapsed(gioMapStruct.changedTimeInOn[m_IOConfig[no].IOAddr][m_IOConfig[no].IOBit]);
+		}
+		else if (onoff == INOFF && di1(no) == INOFF)
+		{
+			time = _time_elapsed(gioMapStruct.changedTimeInOff[m_IOConfig[no].IOAddr][m_IOConfig[no].IOBit]);
+		}
+
+		if (GetWorkExistSkip() == 1)
+		{
+			//if (no == IN_FCONV_WORK1_EXIST || no == IN_FCONV_ENTRY_EXIST || no == IN_FCONV_EXIT_EXIST)
+			//if (no == IN_FCONV_WORK1_EXIST || no == IN_FCONV_ENTRY_EXIST)
+			if (no == IN_FCONV_WORK1_EXIST)
+			{
+				time = TIME10000MS;
+			}
+		}
+
+		//if (GetFirstPickup() == 1)
+		//{
+		//	if (no >= IN_FFEEDER_READY01 && no <= IN_FFEEDER_READY16)
+		//	{
+		//		time = TIME10000MS;
+		//	}
+		//	if (no >= IN_RFEEDER_READY01 && no <= IN_RFEEDER_READY16)
+		//	{
+		//		time = TIME10000MS;
+		//	}
+		//}
+		
+		//if (gcPowerLog->IsShowIoLog() == true)
+		//{
+		//	TRACE(_T("[PWR] di1ElapsedTime No:%04d IOAddr:%04d IOBit:%02d Time:%d\n"), no, m_IOConfig[no].IOAddr, m_IOConfig[no].IOBit, time);
+		//}
+
+	}
+	else if (m_IOConfig[no].HWType == IO_SIMULATION) // Simulation IO
+	{
+		if (m_Simulation[no] == true)
+		{
+			time = TIME1000MS;
+		}
+		else
+		{
+			time = -TIME1000MS;
+		}
+		//if (gcPowerLog->IsShowIoLog() == true)
+		//{
+		//	TRACE(_T("[PWR] Simulation di1 No:%04d Status:%d\n"), no, time);
+		//}
+	}
+	return time;
+}
+
+ULONGLONG CPowerIO::do1ElapsedTime(long no, long onoff)
+{
+	ULONGLONG time = 0;
+	if (no == IO_NOUSE)
+	{
+		return 0;
+	}
+	if (no >= MAXIODEFINE)
+	{
+		return 0;
+	}
+	if (m_IOConfig[no].HWType == IO_UNKNOWN) // IO No Use
+	{
+		return 0;
+	}
+
+	if (m_IOConfig[no].Usage == NO_USE) // IO No Use
+	{
+		return 0;
+	}
+
+	else if (m_IOConfig[no].HWType == IO_WMX3_DIRECT) // WMX3 IO
+	{
+		if (onoff == OUTON && Getdo1(no) == OUTON)
+		{
+			time = _time_elapsed(gioMapStruct.changedTimeOutOn[m_IOConfig[no].IOAddr][m_IOConfig[no].IOBit]);
+		}
+		else if (onoff == OUTOFF && Getdo1(no) == OUTOFF)
+		{
+			time = _time_elapsed(gioMapStruct.changedTimeOutOff[m_IOConfig[no].IOAddr][m_IOConfig[no].IOBit]);
+		}
+	}
+	else if (m_IOConfig[no].HWType == IO_SIMULATION) // Simulation IO
+	{
+		if (m_Simulation[no] == true)
+		{
+			time = TIME1000MS;
+		}
+		else
+		{
+			time = -TIME1000MS;
+		}
+	}
+	return time;
+}
+
+UBYTE CPowerIO::Getdo1(long no)
+{
+	unsigned char outData = 0x00, setData = 0x00;
+	UBYTE bStatus = INOFF;
+	if (no == IO_NOUSE)
+	{
+		return bStatus;
+	}
+	if (no >= MAXIODEFINE)
+	{
+		return bStatus;
+	}
+	if (m_IOConfig[no].HWType == IO_UNKNOWN) // IO No Use
+	{
+		return bStatus;
+	}
+	else if (m_IOConfig[no].HWType == IO_WMX3_DIRECT) // WMX3 IO
+	{
+		GetIO()->GetOutByte(m_IOConfig[no].IOAddr, (unsigned char*)&outData);
+		//if (gcPowerLog->IsShowIoLog() == true)
+		//{
+		//	TRACE(_T("[PWR] Getdo1 No:%d IOAddr:%d IOBit:%d outData:%d\n"), no, m_IOConfig[no].IOAddr, m_IOConfig[no].IOBit, outData);
+		//}
+		for (unsigned bit = 0; bit < WMX3IO_MODULE_BYTE; ++bit)
+		{
+			if (bit == m_IOConfig[no].IOBit)
+			{
+				SET_BIT(setData, bit);
+			}
+		}
+		//if (gcPowerLog->IsShowIoLog() == true)
+		//{
+		//	TRACE(_T("[PWR] Getdo1 No:%d IOAddr:%d IOBit:%d setData:%d\n"), no, m_IOConfig[no].IOAddr, m_IOConfig[no].IOBit, setData);
+		//}
+		if ((outData & setData) == setData)
+			bStatus = OUTON;
+		else
+			bStatus = OUTOFF;
+		//if (gcPowerLog->IsShowIoLog() == true)
+		//{
+		//	TRACE(_T("[PWR] Getdo1 No:%d IOAddr:%d IOBit:%d bStatus:%d\n"), no, m_IOConfig[no].IOAddr, m_IOConfig[no].IOBit, bStatus);
+		//}
+	}
+	else if (m_IOConfig[no].HWType == IO_SIMULATION) // Simulation IO
+	{
+		if (m_Simulation[no] == true)
+		{
+			bStatus = OUTON;
+		}
+		else
+		{
+			bStatus = OUTOFF;
+		}
+		//if (gcPowerLog->IsShowIoLog() == true)
+		//{
+		//	TRACE(_T("[PWR] Simulation Getdo1 No:%04d Status:%d\n"), no, bStatus);
+		//}
+	}
+	return bStatus;
+}
+
+//
+//void CPowerIO::do1(long no, long onoff)
+//{
+//	unsigned char outData = 0x00, setData = 0x00;
+//	if (no == IO_NOUSE)
+//	{
+//		return;
+//	}
+//	if (no >= MAXIODEFINE)
+//	{
+//		return ;
+//	}
+//	if (m_IOConfig[no].HWType == IO_UNKNOWN) // IO No Use
+//	{
+//		return ;
+//	}
+//	else if (m_IOConfig[no].HWType == IO_WMX3_DIRECT) // WMX3 IO
+//	{
+//		SEM_LOCK(m_MessageLock, INFINITE);
+//		if (onoff == OUTON)
+//		{
+//			GetIO()->GetOutByte(m_IOConfig[no].IOAddr, (unsigned char*)&outData);
+//			if (gcPowerLog->IsShowIoLog() == true)
+//			{
+//				TRACE(_T("[PWR] do1 No:%d IOAddr:%d IOBit:%d Old outData:%d\n"), no, m_IOConfig[no].IOAddr, m_IOConfig[no].IOBit, outData);
+//			}
+//			for (unsigned bit = 0; bit < WMX3IO_MODULE_BYTE; ++bit)
+//			{
+//				if (bit == m_IOConfig[no].IOBit)
+//				{
+//					SET_BIT(setData, bit);
+//				}
+//			}
+//			outData = outData | setData;
+//			GetIO()->SetOutByte(m_IOConfig[no].IOAddr, (unsigned char)outData);
+//			if (gcPowerLog->IsShowIoLog() == true)
+//			{
+//				TRACE(_T("[PWR] do1 No:%d IOAddr:%d IOBit:%d New outData:%d\n"), no, m_IOConfig[no].IOAddr, m_IOConfig[no].IOBit, outData);
+//			}
+//		}
+//		else
+//		{
+//			GetIO()->GetOutByte(m_IOConfig[no].IOAddr, (unsigned char*)&outData);
+//			if (gcPowerLog->IsShowIoLog() == true)
+//			{
+//				TRACE(_T("[PWR] do1 No:%d IOAddr:%d IOBit:%d Old outData:%d\n"), no, m_IOConfig[no].IOAddr, m_IOConfig[no].IOBit, outData);
+//			}
+//			for (unsigned bit = 0; bit < WMX3IO_MODULE_BYTE; ++bit)
+//			{
+//				if (bit == m_IOConfig[no].IOBit)
+//				{
+//					CLR_BIT(outData, bit);
+//				}
+//			}
+//			GetIO()->SetOutByte(m_IOConfig[no].IOAddr, (unsigned char)outData);
+//			if (gcPowerLog->IsShowIoLog() == true)
+//			{
+//				TRACE(_T("[PWR] do1 No:%d IOAddr:%d IOBit:%d New outData:%d\n"), no, m_IOConfig[no].IOAddr, m_IOConfig[no].IOBit, outData);
+//			}
+//		}
+//		SEM_UNLOCK(m_MessageLock);
+//	}
+//	else if (m_IOConfig[no].HWType == IO_SIMULATION) // Simulation IO
+//	{
+//		if (onoff == OUTON)
+//		{
+//			m_Simulation[no] = true;
+//		}
+//		else
+//		{
+//			m_Simulation[no] = false;
+//		}
+//		TRACE(_T("[PWR] Simulation do1 No:%d onoff:%d\n"), no, onoff);
+//	}
+//}
+
+void CPowerIO::do1(long no, long onoff)
+{
+	unsigned char outDataOld = 0x00, setData = 0x00, outDataNew = 0x00;
+	if (no == IO_NOUSE)
+	{
+		return;
+	}
+	if (no >= MAXIODEFINE)
+	{
+		return;
+	}
+	if (m_IOConfig[no].HWType == IO_UNKNOWN) // IO No Use
+	{
+		return;
+	}
+	else if (m_IOConfig[no].HWType == IO_WMX3_DIRECT) // WMX3 IO
+	{
+		if (onoff == OUTON)
+		{
+			outDataNew = 0x01;
+		}
+		else
+		{
+			outDataNew = 0x00;
+		}
+		GetIO()->GetOutBit(m_IOConfig[no].IOAddr, m_IOConfig[no].IOBit, (unsigned char*)&outDataOld);
+		GetIO()->SetOutBit(m_IOConfig[no].IOAddr, m_IOConfig[no].IOBit, (unsigned char)outDataNew);
+		//if (gcPowerLog->IsShowIoLog() == true)
+		//{
+		//	TRACE(_T("[PWR] do1 No:%d IOAddr:%d IOBit:%d Old:%d New:%d\n"), no, m_IOConfig[no].IOAddr, m_IOConfig[no].IOBit, outDataOld, outDataNew);
+		//}
+	}
+	else if (m_IOConfig[no].HWType == IO_SIMULATION) // Simulation IO
+	{
+		if (onoff == OUTON)
+		{
+			m_Simulation[no] = true;
+		}
+		else
+		{
+			m_Simulation[no] = false;
+		}
+		TRACE(_T("[PWR] Simulation do1 No:%d onoff:%d\n"), no, onoff);
+	}
+}
+
+bool CPowerIO::dit1(long port, long onoff, long dwTime)
+{
+	if (di1(port) == onoff)
+	{
+		ThreadSleep(dwTime);
+		if (di1(port) == onoff) 
+			return true;
+		else 
+			return false;
+	}
+	return false;
+}
+
+bool CPowerIO::Getdot1(long port, long onoff, long dwTime)
+{
+	if (Getdo1(port) == onoff)
+	{
+		ThreadSleep(dwTime);
+		if (Getdo1(port) == onoff)
+			return true;
+		else
+			return false;
+	}
+	return false;
+}
+
+long CPowerIO::GetReadyIONoFromReadyNo(long ReadyNo)
+{
+	long ReadyIONo = IO_NOUSE;
+	long Table = 0;
+	if (ReadyNo > MAX_FEEDER_READY_NO)
+	{
+		Table = 1;
+	}
+	switch (ReadyNo % MAX_FEEDER_READY_NO)
+	{
+	case 1:
+		ReadyIONo = IN_FFEEDER_READY01 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 2:
+		ReadyIONo = IN_FFEEDER_READY02 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 3:
+		ReadyIONo = IN_FFEEDER_READY03 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 4:
+		ReadyIONo = IN_FFEEDER_READY04 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 5:
+		ReadyIONo = IN_FFEEDER_READY05 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 6:
+		ReadyIONo = IN_FFEEDER_READY06 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 7:
+		ReadyIONo = IN_FFEEDER_READY07 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 8:
+		ReadyIONo = IN_FFEEDER_READY08 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 9:
+		ReadyIONo = IN_FFEEDER_READY09 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 10:
+		ReadyIONo = IN_FFEEDER_READY10 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 11:
+		ReadyIONo = IN_FFEEDER_READY11 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 12:
+		ReadyIONo = IN_FFEEDER_READY12 + (Table * FEEDER_IO_PITCH);
+		break;
+	default:
+		break;
+	}
+	return ReadyIONo;
+}
+
+long CPowerIO::GetReleaseIONoFromReleaseNo(long ReleaseNo)
+{
+	long ReleaseIONo = IO_NOUSE;
+	long Table = 0;
+	if (ReleaseNo > MAX_FEEDER_READY_NO)
+		Table = 1;
+	switch (ReleaseNo % MAX_FEEDER_READY_NO)
+	{
+	case 1:
+		ReleaseIONo = OUT_FFEEDER_RELEASE01 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 2:
+		ReleaseIONo = OUT_FFEEDER_RELEASE02 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 3:
+		ReleaseIONo = OUT_FFEEDER_RELEASE03 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 4:
+		ReleaseIONo = OUT_FFEEDER_RELEASE04 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 5:
+		ReleaseIONo = OUT_FFEEDER_RELEASE05 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 6:
+		ReleaseIONo = OUT_FFEEDER_RELEASE06 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 7:
+		ReleaseIONo = OUT_FFEEDER_RELEASE07 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 8:
+		ReleaseIONo = OUT_FFEEDER_RELEASE08 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 9:
+		ReleaseIONo = OUT_FFEEDER_RELEASE09 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 10:
+		ReleaseIONo = OUT_FFEEDER_RELEASE10 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 11:
+		ReleaseIONo = OUT_FFEEDER_RELEASE11 + (Table * FEEDER_IO_PITCH);
+		break;
+	case 12:
+		ReleaseIONo = OUT_FFEEDER_RELEASE12 + (Table * FEEDER_IO_PITCH);
+		break;
+	default:
+		break;
+	}
+	return ReleaseIONo;
+}
+
+long CPowerIO::GetInOutType(long PortNo)
+{
+	long ret = 0;
+	if (PortNo < MAXIODEFINE)
+	{
+		ret = m_IOConfig[PortNo].IsOutput;
+	}
+	
+	return ret;
+}
+
+bool CPowerIO::IsUsedIO(long inout, long addr, unsigned char bit, CString* description)
+{
+	for (long i = 0; i < MAXIODEFINE; i++)
+	{
+		if (m_IOConfig[i].IOAddr == addr && m_IOConfig[i].IOBit == bit && m_IOConfig[i].HWType == IO_WMX3_DIRECT && m_IOConfig[i].IsOutput == inout)
+		{
+			if (m_IOConfig[i].Usage == YES_USE)
+			{
+				*description = m_IOConfig[i].Description;
+				return true;
+			}
+			//else
+			//{
+			//	return false;
+			//}
+		}
+	}
+
+	return false;
+}
+
+bool CPowerIO::IsUsedIO(const int IONUMBER_ON_IODEFINE_HEADER) const
+{
+	if (IONUMBER_ON_IODEFINE_HEADER < 0 || MAXIODEFINE <= IONUMBER_ON_IODEFINE_HEADER)
+	{
+		return false;
+	}
+	if (this->m_IOConfig[IONUMBER_ON_IODEFINE_HEADER].Usage == YES_USE)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void CPowerIO::ReadHeadAnalogIO_Weid1st()
+{
+	m_IOConfig[IN_FHEAD1_ANALOG].Usage = YES_USE;
+	m_IOConfig[IN_FHEAD1_ANALOG].HWType = IO_WMX3_ANALOG_EJECTOR;
+	m_IOConfig[IN_FHEAD1_ANALOG].IOAddr = 5009;
+
+	m_IOConfig[IN_FHEAD2_ANALOG].Usage = YES_USE;
+	m_IOConfig[IN_FHEAD2_ANALOG].HWType = IO_WMX3_ANALOG_EJECTOR;
+	m_IOConfig[IN_FHEAD2_ANALOG].IOAddr = 5011;
+
+	m_IOConfig[IN_FHEAD3_ANALOG].Usage = YES_USE;
+	m_IOConfig[IN_FHEAD3_ANALOG].HWType = IO_WMX3_ANALOG_EJECTOR;
+	m_IOConfig[IN_FHEAD3_ANALOG].IOAddr = 5013;
+
+	m_IOConfig[IN_FHEAD4_ANALOG].Usage = YES_USE;
+	m_IOConfig[IN_FHEAD4_ANALOG].HWType = IO_WMX3_ANALOG_EJECTOR;
+	m_IOConfig[IN_FHEAD4_ANALOG].IOAddr = 5018;
+
+	m_IOConfig[IN_FHEAD5_ANALOG].Usage = YES_USE;
+	m_IOConfig[IN_FHEAD5_ANALOG].HWType = IO_WMX3_ANALOG_EJECTOR;
+	m_IOConfig[IN_FHEAD5_ANALOG].IOAddr = 5020;
+
+	m_IOConfig[IN_FHEAD6_ANALOG].Usage = YES_USE;
+	m_IOConfig[IN_FHEAD6_ANALOG].HWType = IO_WMX3_ANALOG_EJECTOR;
+	m_IOConfig[IN_FHEAD6_ANALOG].IOAddr = 5022;
+}
+
+void CPowerIO::ReadHeadSuctionBlowIO_Weid1st()
+{
+	m_IOConfig[OUT_FHEAD1_BLO].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD1_BLO].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD1_BLO].IOAddr = 5002;
+	m_IOConfig[OUT_FHEAD1_BLO].IOBit = 0;
+
+	m_IOConfig[OUT_FHEAD1_SUC].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD1_SUC].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD1_SUC].IOAddr = 5002;
+	m_IOConfig[OUT_FHEAD1_SUC].IOBit = 1;
+
+	m_IOConfig[OUT_FHEAD2_BLO].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD2_BLO].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD2_BLO].IOAddr = 5002;
+	m_IOConfig[OUT_FHEAD2_BLO].IOBit = 2;
+
+	m_IOConfig[OUT_FHEAD2_SUC].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD2_SUC].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD2_SUC].IOAddr = 5002;
+	m_IOConfig[OUT_FHEAD2_SUC].IOBit = 3;
+
+	m_IOConfig[OUT_FHEAD3_BLO].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD3_BLO].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD3_BLO].IOAddr = 5002;
+	m_IOConfig[OUT_FHEAD3_BLO].IOBit = 4;
+
+	m_IOConfig[OUT_FHEAD3_SUC].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD3_SUC].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD3_SUC].IOAddr = 5002;
+	m_IOConfig[OUT_FHEAD3_SUC].IOBit = 5;
+
+	m_IOConfig[OUT_FHEAD4_BLO].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD4_BLO].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD4_BLO].IOAddr = 5002;
+	m_IOConfig[OUT_FHEAD4_BLO].IOBit = 6;
+
+	m_IOConfig[OUT_FHEAD4_SUC].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD4_SUC].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD4_SUC].IOAddr = 5002;
+	m_IOConfig[OUT_FHEAD4_SUC].IOBit = 7;
+
+	m_IOConfig[OUT_FHEAD5_BLO].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD5_BLO].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD5_BLO].IOAddr = 5003;
+	m_IOConfig[OUT_FHEAD5_BLO].IOBit = 0;
+
+	m_IOConfig[OUT_FHEAD5_SUC].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD5_SUC].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD5_SUC].IOAddr = 5003;
+	m_IOConfig[OUT_FHEAD5_SUC].IOBit = 1;
+
+	m_IOConfig[OUT_FHEAD6_BLO].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD6_BLO].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD6_BLO].IOAddr = 5003;
+	m_IOConfig[OUT_FHEAD6_BLO].IOBit = 2;
+
+	m_IOConfig[OUT_FHEAD6_SUC].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD6_SUC].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD6_SUC].IOAddr = 5003;
+	m_IOConfig[OUT_FHEAD6_SUC].IOBit = 3;
+}
+
+void CPowerIO::ReadHeightMeasurementIO_Weid1st()
+{
+	m_IOConfig[OUT_FHEAD_ZHMD_OFF].Usage = YES_USE;
+	m_IOConfig[OUT_FHEAD_ZHMD_OFF].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FHEAD_ZHMD_OFF].IOAddr = 5003;
+	m_IOConfig[OUT_FHEAD_ZHMD_OFF].IOBit = 4;
+
+	m_IOConfig[IN_FHEAD_ZHMD_HEIGHT].Usage = YES_USE;
+	m_IOConfig[IN_FHEAD_ZHMD_HEIGHT].HWType = IO_WMX3_ANALOG_SICK;
+	m_IOConfig[IN_FHEAD_ZHMD_HEIGHT].IOAddr = 5024;
+
+	m_IOConfig[OUT_RHEAD_ZHMD_OFF].Usage = YES_USE;
+	m_IOConfig[OUT_RHEAD_ZHMD_OFF].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RHEAD_ZHMD_OFF].IOAddr = 5008;
+	m_IOConfig[OUT_RHEAD_ZHMD_OFF].IOBit = 5;
+
+	m_IOConfig[IN_RHEAD_ZHMD_HEIGHT].Usage = YES_USE;
+	m_IOConfig[IN_RHEAD_ZHMD_HEIGHT].HWType = IO_WMX3_ANALOG_SICK;
+	m_IOConfig[IN_RHEAD_ZHMD_HEIGHT].IOAddr = 5015;
+}
+
+void CPowerIO::ReadConveyorIO_Weid1st(bool bReverse)
+{
+	if (bReverse == true)
+	{
+		// InBuffer
+		m_IOConfig[IN_FCONV_ENTRY_ENT].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_ENTRY_ENT].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_ENTRY_ENT].IOAddr = 1702;
+		m_IOConfig[IN_FCONV_ENTRY_ENT].IOBit = 1;
+
+		m_IOConfig[IN_FCONV_ENTRY_EXIST].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_ENTRY_EXIST].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_ENTRY_EXIST].IOAddr = 1702;
+		m_IOConfig[IN_FCONV_ENTRY_EXIST].IOBit = 0;
+
+		// Work
+		m_IOConfig[IN_FCONV_WORK1_LOW].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_WORK1_LOW].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_WORK1_LOW].IOAddr = 1602;
+		m_IOConfig[IN_FCONV_WORK1_LOW].IOBit = 1;
+
+		m_IOConfig[IN_FCONV_WORK1_EXIST].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_WORK1_EXIST].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_WORK1_EXIST].IOAddr = 1602;
+		m_IOConfig[IN_FCONV_WORK1_EXIST].IOBit = 0;
+
+		m_IOConfig[IN_FCONV_WORK1_OUT].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_WORK1_OUT].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_WORK1_OUT].IOAddr = 1502;
+		m_IOConfig[IN_FCONV_WORK1_OUT].IOBit = 1;
+
+		m_IOConfig[IN_FCONV_WORK1_STOP_UP].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_WORK1_STOP_UP].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_WORK1_STOP_UP].IOAddr = 1602;
+		m_IOConfig[IN_FCONV_WORK1_STOP_UP].IOBit = 2;
+
+		m_IOConfig[OUT_FCONV_WORK1_STOP_UP].Usage = YES_USE;
+		m_IOConfig[OUT_FCONV_WORK1_STOP_UP].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_FCONV_WORK1_STOP_UP].IOAddr = 1602;
+		m_IOConfig[OUT_FCONV_WORK1_STOP_UP].IOBit = 0;
+
+		// OutBuffer
+		m_IOConfig[IN_FCONV_EXIT_EXIST].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_EXIT_EXIST].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_EXIT_EXIST].IOAddr = 1502;
+		m_IOConfig[IN_FCONV_EXIT_EXIST].IOBit = 0;
+	}
+	else
+	{
+		// InBuffer
+		m_IOConfig[IN_FCONV_ENTRY_ENT].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_ENTRY_ENT].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_ENTRY_ENT].IOAddr = 1502;
+		m_IOConfig[IN_FCONV_ENTRY_ENT].IOBit = 0;
+
+		m_IOConfig[IN_FCONV_ENTRY_EXIST].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_ENTRY_EXIST].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_ENTRY_EXIST].IOAddr = 1502;
+		m_IOConfig[IN_FCONV_ENTRY_EXIST].IOBit = 1;
+
+		// Work
+		m_IOConfig[IN_FCONV_WORK1_LOW].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_WORK1_LOW].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_WORK1_LOW].IOAddr = 1602;
+		m_IOConfig[IN_FCONV_WORK1_LOW].IOBit = 1;
+
+		m_IOConfig[IN_FCONV_WORK1_EXIST].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_WORK1_EXIST].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_WORK1_EXIST].IOAddr = 1602;
+		m_IOConfig[IN_FCONV_WORK1_EXIST].IOBit = 0;
+
+		m_IOConfig[IN_FCONV_WORK1_OUT].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_WORK1_OUT].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_WORK1_OUT].IOAddr = 1702;
+		m_IOConfig[IN_FCONV_WORK1_OUT].IOBit = 0;
+
+		m_IOConfig[IN_FCONV_WORK1_STOP_UP].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_WORK1_STOP_UP].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_WORK1_STOP_UP].IOAddr = 1602;
+		m_IOConfig[IN_FCONV_WORK1_STOP_UP].IOBit = 2;
+
+		m_IOConfig[OUT_FCONV_WORK1_STOP_UP].Usage = YES_USE;
+		m_IOConfig[OUT_FCONV_WORK1_STOP_UP].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_FCONV_WORK1_STOP_UP].IOAddr = 1602;
+		m_IOConfig[OUT_FCONV_WORK1_STOP_UP].IOBit = 0;
+
+		// OutBuffer
+		m_IOConfig[IN_FCONV_EXIT_EXIST].Usage = YES_USE;
+		m_IOConfig[IN_FCONV_EXIT_EXIST].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FCONV_EXIT_EXIST].IOAddr = 1702;
+		m_IOConfig[IN_FCONV_EXIT_EXIST].IOBit = 1;
+	}
+}
+
+void CPowerIO::ReadAncIO_Weid1st()
+{
+	// Front Clamp Lock & Unlock
+	m_IOConfig[IN_FANC_CLAMP_LOCK].Usage = YES_USE;
+	m_IOConfig[IN_FANC_CLAMP_LOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FANC_CLAMP_LOCK].IOAddr = 5000;
+	m_IOConfig[IN_FANC_CLAMP_LOCK].IOBit = 0;
+
+	m_IOConfig[IN_FANC_CLAMP_UNLOCK].Usage = YES_USE;
+	m_IOConfig[IN_FANC_CLAMP_UNLOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FANC_CLAMP_UNLOCK].IOAddr = 5000;
+	m_IOConfig[IN_FANC_CLAMP_UNLOCK].IOBit = 1;
+
+	m_IOConfig[OUT_FANC_CLAMP_UNLOCK].Usage = YES_USE;
+	m_IOConfig[OUT_FANC_CLAMP_UNLOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FANC_CLAMP_UNLOCK].IOAddr = 5000;
+	m_IOConfig[OUT_FANC_CLAMP_UNLOCK].IOBit = 0;
+
+	// Front Base Up & Down
+	m_IOConfig[IN_FANC_BASE_UP].Usage = NO_USE;
+	m_IOConfig[IN_FANC_BASE_UP].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FANC_BASE_UP].IOAddr = 5000;
+	m_IOConfig[IN_FANC_BASE_UP].IOBit = 2;
+
+	m_IOConfig[IN_FANC_BASE_DN].Usage = NO_USE;
+	m_IOConfig[IN_FANC_BASE_DN].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FANC_BASE_DN].IOAddr = 5000;
+	m_IOConfig[IN_FANC_BASE_DN].IOBit = 3;
+
+	m_IOConfig[OUT_FANC_BASE_UP].Usage = NO_USE;
+	m_IOConfig[OUT_FANC_BASE_UP].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FANC_BASE_UP].IOAddr = 5000;
+	m_IOConfig[OUT_FANC_BASE_UP].IOBit = 1;
+
+	// Rear Clamp Lock & Unlock
+	m_IOConfig[IN_RANC_CLAMP_LOCK].Usage = NO_USE;
+	m_IOConfig[IN_RANC_CLAMP_LOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RANC_CLAMP_LOCK].IOAddr = 5003;
+	m_IOConfig[IN_RANC_CLAMP_LOCK].IOBit = 0;
+
+	m_IOConfig[IN_RANC_CLAMP_UNLOCK].Usage = NO_USE;
+	m_IOConfig[IN_RANC_CLAMP_UNLOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RANC_CLAMP_UNLOCK].IOAddr = 5003;
+	m_IOConfig[IN_RANC_CLAMP_UNLOCK].IOBit = 1;
+
+	m_IOConfig[OUT_RANC_CLAMP_UNLOCK].Usage = NO_USE;
+	m_IOConfig[OUT_RANC_CLAMP_UNLOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RANC_CLAMP_UNLOCK].IOAddr = 5000;
+	m_IOConfig[OUT_RANC_CLAMP_UNLOCK].IOBit = 2;
+
+	// Rear Base Up & Down
+	m_IOConfig[IN_RANC_BASE_UP].Usage = NO_USE;
+	m_IOConfig[IN_RANC_BASE_UP].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RANC_BASE_UP].IOAddr = 5003;
+	m_IOConfig[IN_RANC_BASE_UP].IOBit = 2;
+
+	m_IOConfig[IN_RANC_BASE_DN].Usage = NO_USE;
+	m_IOConfig[IN_RANC_BASE_DN].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RANC_BASE_DN].IOAddr = 5003;
+	m_IOConfig[IN_RANC_BASE_DN].IOBit = 3;
+
+	m_IOConfig[OUT_RANC_BASE_UP].Usage = NO_USE;
+	m_IOConfig[OUT_RANC_BASE_UP].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RANC_BASE_UP].IOAddr = 5000;
+	m_IOConfig[OUT_RANC_BASE_UP].IOBit = 3;
+}
+
+void CPowerIO::ReadDoorIO_Weid1st()
+{
+	// Front Door Lock
+	m_IOConfig[IN_FDOOR_KEY_UNLOCK].Usage = YES_USE;
+	m_IOConfig[IN_FDOOR_KEY_UNLOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FDOOR_KEY_UNLOCK].IOAddr = 5000;
+	m_IOConfig[IN_FDOOR_KEY_UNLOCK].IOBit = 4;
+
+	m_IOConfig[IN_FDOOR_KEY_OUT].Usage = YES_USE;
+	m_IOConfig[IN_FDOOR_KEY_OUT].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FDOOR_KEY_OUT].IOAddr = 5000;
+	m_IOConfig[IN_FDOOR_KEY_OUT].IOBit = 5;
+
+	m_IOConfig[OUT_FDOOR_KEY_LOCK].Usage = YES_USE;
+	m_IOConfig[OUT_FDOOR_KEY_LOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FDOOR_KEY_LOCK].IOAddr = 5000;
+	m_IOConfig[OUT_FDOOR_KEY_LOCK].IOBit = 4;
+
+	// Rear Door Lock
+	m_IOConfig[IN_RDOOR_KEY_UNLOCK].Usage = YES_USE;
+	m_IOConfig[IN_RDOOR_KEY_UNLOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RDOOR_KEY_UNLOCK].IOAddr = 5003;
+	m_IOConfig[IN_RDOOR_KEY_UNLOCK].IOBit = 4;
+
+	m_IOConfig[IN_RDOOR_KEY_OUT].Usage = YES_USE;
+	m_IOConfig[IN_RDOOR_KEY_OUT].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RDOOR_KEY_OUT].IOAddr = 5003;
+	m_IOConfig[IN_RDOOR_KEY_OUT].IOBit = 5;
+
+	m_IOConfig[OUT_RDOOR_KEY_LOCK].Usage = YES_USE;
+	m_IOConfig[OUT_RDOOR_KEY_LOCK].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RDOOR_KEY_LOCK].IOAddr = 5000;
+	m_IOConfig[OUT_RDOOR_KEY_LOCK].IOBit = 5;
+}
+
+void CPowerIO::ReadSafetyIO_Weid1st()
+{
+	// Front Area Sensor
+	m_IOConfig[IN_FRONT_AREA_SENSOR].Usage = YES_USE;
+	m_IOConfig[IN_FRONT_AREA_SENSOR].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FRONT_AREA_SENSOR].IOAddr = 5000;
+	m_IOConfig[IN_FRONT_AREA_SENSOR].IOBit = 6;
+
+	// Rear Area Sensor
+	m_IOConfig[IN_REAR_AREA_SENSOR].Usage = YES_USE;
+	m_IOConfig[IN_REAR_AREA_SENSOR].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_REAR_AREA_SENSOR].IOAddr = 5003;
+	m_IOConfig[IN_REAR_AREA_SENSOR].IOBit = 6;
+
+	// Front Emergency
+	m_IOConfig[IN_FEMERGENCY].Usage = YES_USE;
+	m_IOConfig[IN_FEMERGENCY].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FEMERGENCY].IOAddr = 5000;
+	m_IOConfig[IN_FEMERGENCY].IOBit = 7;
+
+	// Rear Emergency
+	m_IOConfig[IN_REMERGENCY].Usage = YES_USE;
+	m_IOConfig[IN_REMERGENCY].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_REMERGENCY].IOAddr = 5003;
+	m_IOConfig[IN_REMERGENCY].IOBit = 7;
+
+	m_IOConfig[IN_SAFETY_ON].Usage = YES_USE;
+	m_IOConfig[IN_SAFETY_ON].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_SAFETY_ON].IOAddr = 5001;
+	m_IOConfig[IN_SAFETY_ON].IOBit = 5;
+
+	m_IOConfig[IN_LOTO_KEY_ON].Usage = YES_USE;
+	m_IOConfig[IN_LOTO_KEY_ON].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_LOTO_KEY_ON].IOAddr = 5001;
+	m_IOConfig[IN_LOTO_KEY_ON].IOBit = 6;
+
+	// Motor Power IO
+	m_IOConfig[OUT_MOTOR_POWER].Usage = YES_USE;
+	m_IOConfig[OUT_MOTOR_POWER].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_MOTOR_POWER].IOAddr = 5001;
+	m_IOConfig[OUT_MOTOR_POWER].IOBit = 6;
+}
+
+void CPowerIO::ReadUserKeyIO_Weid1st()
+{
+	m_IOConfig[IN_STOP_PANEL_KEY].Usage = YES_USE;
+	m_IOConfig[IN_STOP_PANEL_KEY].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_STOP_PANEL_KEY].IOAddr = 5001;
+	m_IOConfig[IN_STOP_PANEL_KEY].IOBit = 0;
+
+	m_IOConfig[OUT_STOP_PANEL_LED].Usage = YES_USE;
+	m_IOConfig[OUT_STOP_PANEL_LED].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_STOP_PANEL_LED].IOAddr = 5000;
+	m_IOConfig[OUT_STOP_PANEL_LED].IOBit = 6;
+
+	m_IOConfig[IN_FDOOR_LOCK_PANEL_KEY].Usage = YES_USE;
+	m_IOConfig[IN_FDOOR_LOCK_PANEL_KEY].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FDOOR_LOCK_PANEL_KEY].IOAddr = 5001;
+	m_IOConfig[IN_FDOOR_LOCK_PANEL_KEY].IOBit = 1;
+
+	m_IOConfig[OUT_FDOOR_LOCK_PANEL_LED].Usage = YES_USE;
+	m_IOConfig[OUT_FDOOR_LOCK_PANEL_LED].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FDOOR_LOCK_PANEL_LED].IOAddr = 5000;
+	m_IOConfig[OUT_FDOOR_LOCK_PANEL_LED].IOBit = 7;
+
+	m_IOConfig[IN_START_PANEL_KEY].Usage = YES_USE;
+	m_IOConfig[IN_START_PANEL_KEY].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_START_PANEL_KEY].IOAddr = 5001;
+	m_IOConfig[IN_START_PANEL_KEY].IOBit = 2;
+
+	m_IOConfig[OUT_START_PANEL_LED].Usage = YES_USE;
+	m_IOConfig[OUT_START_PANEL_LED].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_START_PANEL_LED].IOAddr = 5001;
+	m_IOConfig[OUT_START_PANEL_LED].IOBit = 0;
+
+	m_IOConfig[IN_RESET_PANEL_KEY].Usage = YES_USE;
+	m_IOConfig[IN_RESET_PANEL_KEY].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RESET_PANEL_KEY].IOAddr = 5001;
+	m_IOConfig[IN_RESET_PANEL_KEY].IOBit = 3;
+
+	m_IOConfig[OUT_RESET_PANEL_LED].Usage = YES_USE;
+	m_IOConfig[OUT_RESET_PANEL_LED].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RESET_PANEL_LED].IOAddr = 5001;
+	m_IOConfig[OUT_RESET_PANEL_LED].IOBit = 1;
+
+	m_IOConfig[IN_RDOOR_LOCK_PANEL_KEY].Usage = YES_USE;
+	m_IOConfig[IN_RDOOR_LOCK_PANEL_KEY].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RDOOR_LOCK_PANEL_KEY].IOAddr = 5001;
+	m_IOConfig[IN_RDOOR_LOCK_PANEL_KEY].IOBit = 1;
+
+	m_IOConfig[OUT_RDOOR_LOCK_PANEL_LED].Usage = YES_USE;
+	m_IOConfig[OUT_RDOOR_LOCK_PANEL_LED].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RDOOR_LOCK_PANEL_LED].IOAddr = 5000;
+	m_IOConfig[OUT_RDOOR_LOCK_PANEL_LED].IOBit = 7;
+}
+
+void CPowerIO::ReadMachineEnvironmentIO_Weid1st()
+{
+	m_IOConfig[IN_AIR_PRESS_LOW].Usage = YES_USE;
+	m_IOConfig[IN_AIR_PRESS_LOW].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_AIR_PRESS_LOW].IOAddr = 5001;
+	m_IOConfig[IN_AIR_PRESS_LOW].IOBit = 4;
+
+	m_IOConfig[OUT_CLEAN_CAM_BLOW].Usage = YES_USE;
+	m_IOConfig[OUT_CLEAN_CAM_BLOW].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_CLEAN_CAM_BLOW].IOAddr = 5003;
+	m_IOConfig[OUT_CLEAN_CAM_BLOW].IOBit = 6;
+
+	m_IOConfig[OUT_F1ST_LASER_ON].Usage = YES_USE;
+	m_IOConfig[OUT_F1ST_LASER_ON].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_F1ST_LASER_ON].IOAddr = 5004;
+	m_IOConfig[OUT_F1ST_LASER_ON].IOBit = 4;
+
+	m_IOConfig[OUT_R1ST_LASER_ON].Usage = YES_USE;
+	m_IOConfig[OUT_R1ST_LASER_ON].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_R1ST_LASER_ON].IOAddr = 5004;
+	m_IOConfig[OUT_R1ST_LASER_ON].IOBit = 5;
+
+	if (GetUseRTDSensorFX() == 1)
+	{
+		m_IOConfig[IN_FX_LMTEMP_LOW].Usage = YES_USE;
+		m_IOConfig[IN_FX_LMTEMP_LOW].HWType = IO_WMX3_ANALOG_RTD;
+		m_IOConfig[IN_FX_LMTEMP_LOW].IOAddr = 5035;
+	}
+	else
+	{
+		m_IOConfig[IN_FX_LMTEMP_LOW].Usage = YES_USE;
+		m_IOConfig[IN_FX_LMTEMP_LOW].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FX_LMTEMP_LOW].IOAddr = 5004;
+		m_IOConfig[IN_FX_LMTEMP_LOW].IOBit = 4;
+	}
+	if (GetUseRTDSensorFY1() == 1)
+	{
+		m_IOConfig[IN_FY1_LMTEMP_LOW].Usage = YES_USE;
+		m_IOConfig[IN_FY1_LMTEMP_LOW].HWType = IO_WMX3_ANALOG_RTD;
+		m_IOConfig[IN_FY1_LMTEMP_LOW].IOAddr = 5037;
+	}
+	else
+	{
+		m_IOConfig[IN_FY1_LMTEMP_LOW].Usage = YES_USE;
+		m_IOConfig[IN_FY1_LMTEMP_LOW].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FY1_LMTEMP_LOW].IOAddr = 5004;
+		m_IOConfig[IN_FY1_LMTEMP_LOW].IOBit = 5;
+	}
+	if (GetUseRTDSensorFY2() == 1)
+	{
+		m_IOConfig[IN_FY2_LMTEMP_LOW].Usage = YES_USE;
+		m_IOConfig[IN_FY2_LMTEMP_LOW].HWType = IO_WMX3_ANALOG_RTD;
+		m_IOConfig[IN_FY2_LMTEMP_LOW].IOAddr = 5039;
+	}
+	else
+	{
+		m_IOConfig[IN_FY2_LMTEMP_LOW].Usage = YES_USE;
+		m_IOConfig[IN_FY2_LMTEMP_LOW].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[IN_FY2_LMTEMP_LOW].IOAddr = 5004;
+		m_IOConfig[IN_FY2_LMTEMP_LOW].IOBit = 6;
+	}
+
+	m_IOConfig[IN_RX_LMTEMP_LOW].Usage = NO_USE;
+	m_IOConfig[IN_RX_LMTEMP_LOW].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RX_LMTEMP_LOW].IOAddr = 5004;
+	m_IOConfig[IN_RX_LMTEMP_LOW].IOBit = 5;
+
+	m_IOConfig[IN_RY1_LMTEMP_LOW].Usage = NO_USE;
+	m_IOConfig[IN_RY1_LMTEMP_LOW].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RY1_LMTEMP_LOW].IOAddr = 5004;
+	m_IOConfig[IN_RY1_LMTEMP_LOW].IOBit = 5;
+
+	m_IOConfig[IN_RY2_LMTEMP_LOW].Usage = NO_USE;
+	m_IOConfig[IN_RY2_LMTEMP_LOW].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RY2_LMTEMP_LOW].IOAddr = 5004;
+	m_IOConfig[IN_RY2_LMTEMP_LOW].IOBit = 5;
+}
+
+void CPowerIO::ReadSmemaIO_Weid1st()
+{
+	// Front Smema IO
+	m_IOConfig[IN_FCONV_PREV_IN].Usage = YES_USE;
+	m_IOConfig[IN_FCONV_PREV_IN].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FCONV_PREV_IN].IOAddr = 5004;
+	m_IOConfig[IN_FCONV_PREV_IN].IOBit = 0;
+
+	m_IOConfig[OUT_FCONV_PREV_OUT].Usage = YES_USE;
+	m_IOConfig[OUT_FCONV_PREV_OUT].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FCONV_PREV_OUT].IOAddr = 5004;
+	m_IOConfig[OUT_FCONV_PREV_OUT].IOBit = 0;
+
+	m_IOConfig[IN_FCONV_NEXT_IN].Usage = YES_USE;
+	m_IOConfig[IN_FCONV_NEXT_IN].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FCONV_NEXT_IN].IOAddr = 5004;
+	m_IOConfig[IN_FCONV_NEXT_IN].IOBit = 1;
+
+	m_IOConfig[OUT_FCONV_NEXT_OUT].Usage = YES_USE;
+	m_IOConfig[OUT_FCONV_NEXT_OUT].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FCONV_NEXT_OUT].IOAddr = 5004;
+	m_IOConfig[OUT_FCONV_NEXT_OUT].IOBit = 1;
+
+	// Rear Smema IO
+	m_IOConfig[IN_RCONV_PREV_IN].Usage = YES_USE;
+	m_IOConfig[IN_RCONV_PREV_IN].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RCONV_PREV_IN].IOAddr = 5004;
+	m_IOConfig[IN_RCONV_PREV_IN].IOBit = 2;
+
+	m_IOConfig[OUT_RCONV_PREV_OUT].Usage = YES_USE;
+	m_IOConfig[OUT_RCONV_PREV_OUT].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RCONV_PREV_OUT].IOAddr = 5004;
+	m_IOConfig[OUT_RCONV_PREV_OUT].IOBit = 2;
+
+	m_IOConfig[IN_RCONV_NEXT_IN].Usage = YES_USE;
+	m_IOConfig[IN_RCONV_NEXT_IN].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RCONV_NEXT_IN].IOAddr = 5004;
+	m_IOConfig[IN_RCONV_NEXT_IN].IOBit = 3;
+
+	m_IOConfig[OUT_RCONV_NEXT_OUT].Usage = YES_USE;
+	m_IOConfig[OUT_RCONV_NEXT_OUT].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RCONV_NEXT_OUT].IOAddr = 5004;
+	m_IOConfig[OUT_RCONV_NEXT_OUT].IOBit = 3;
+}
+
+void CPowerIO::ReadTowerIO_Weid1st()
+{
+	//m_IOConfig[OUT_FTOWER_LAMP].Usage = YES_USE;
+	//m_IOConfig[OUT_FTOWER_LAMP].HWType = IO_WMX3_DIRECT;
+	//m_IOConfig[OUT_FTOWER_LAMP].IOAddr = 5001;
+	//m_IOConfig[OUT_FTOWER_LAMP].IOBit = 7;
+
+	m_IOConfig[OUT_FBUZZER].Usage = YES_USE;
+	m_IOConfig[OUT_FBUZZER].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FBUZZER].IOAddr = 5001;
+	m_IOConfig[OUT_FBUZZER].IOBit = 2;
+
+	m_IOConfig[OUT_FLAMP_RED].Usage = YES_USE;
+	m_IOConfig[OUT_FLAMP_RED].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FLAMP_RED].IOAddr = 5001;
+	m_IOConfig[OUT_FLAMP_RED].IOBit = 3;
+
+	m_IOConfig[OUT_FLAMP_YEL].Usage = YES_USE;
+	m_IOConfig[OUT_FLAMP_YEL].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FLAMP_YEL].IOAddr = 5001;
+	m_IOConfig[OUT_FLAMP_YEL].IOBit = 4;
+
+	m_IOConfig[OUT_FLAMP_GRN].Usage = YES_USE;
+	m_IOConfig[OUT_FLAMP_GRN].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FLAMP_GRN].IOAddr = 5001;
+	m_IOConfig[OUT_FLAMP_GRN].IOBit = 5;
+}
+
+void CPowerIO::ReadFeederIO_Weid1st()
+{
+	m_IOConfig[IN_FFEEDER_READY01].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY01].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY01].IOAddr = 5027;
+	m_IOConfig[IN_FFEEDER_READY01].IOBit = 0;
+
+	m_IOConfig[IN_FFEEDER_READY02].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY02].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY02].IOAddr = 5027;
+	m_IOConfig[IN_FFEEDER_READY02].IOBit = 1;
+
+	m_IOConfig[IN_FFEEDER_READY03].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY03].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY03].IOAddr = 5027;
+	m_IOConfig[IN_FFEEDER_READY03].IOBit = 2;
+
+	m_IOConfig[IN_FFEEDER_READY04].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY04].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY04].IOAddr = 5027;
+	m_IOConfig[IN_FFEEDER_READY04].IOBit = 3;
+
+	m_IOConfig[IN_FFEEDER_READY05].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY05].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY05].IOAddr = 5027;
+	m_IOConfig[IN_FFEEDER_READY05].IOBit = 4;
+
+	m_IOConfig[IN_FFEEDER_READY06].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY06].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY06].IOAddr = 5027;
+	m_IOConfig[IN_FFEEDER_READY06].IOBit = 5;
+
+	m_IOConfig[IN_FFEEDER_READY07].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY07].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY07].IOAddr = 5027;
+	m_IOConfig[IN_FFEEDER_READY07].IOBit = 6;
+
+	m_IOConfig[IN_FFEEDER_READY08].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY08].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY08].IOAddr = 5027;
+	m_IOConfig[IN_FFEEDER_READY08].IOBit = 7;
+
+	m_IOConfig[IN_FFEEDER_READY09].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY09].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY09].IOAddr = 5028;
+	m_IOConfig[IN_FFEEDER_READY09].IOBit = 0;
+
+	m_IOConfig[IN_FFEEDER_READY10].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY10].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY10].IOAddr = 5028;
+	m_IOConfig[IN_FFEEDER_READY10].IOBit = 1;
+
+	m_IOConfig[IN_FFEEDER_READY11].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY11].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY11].IOAddr = 5028;
+	m_IOConfig[IN_FFEEDER_READY11].IOBit = 2;
+
+	m_IOConfig[IN_FFEEDER_READY12].Usage = YES_USE;
+	m_IOConfig[IN_FFEEDER_READY12].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FFEEDER_READY12].IOAddr = 5028;
+	m_IOConfig[IN_FFEEDER_READY12].IOBit = 3;
+
+	m_IOConfig[IN_RFEEDER_READY01].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY01].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY01].IOAddr = 5031;
+	m_IOConfig[IN_RFEEDER_READY01].IOBit = 0;
+
+	m_IOConfig[IN_RFEEDER_READY02].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY02].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY02].IOAddr = 5031;
+	m_IOConfig[IN_RFEEDER_READY02].IOBit = 1;
+
+	m_IOConfig[IN_RFEEDER_READY03].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY03].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY03].IOAddr = 5031;
+	m_IOConfig[IN_RFEEDER_READY03].IOBit = 2;
+
+	m_IOConfig[IN_RFEEDER_READY04].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY04].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY04].IOAddr = 5031;
+	m_IOConfig[IN_RFEEDER_READY04].IOBit = 3;
+
+	m_IOConfig[IN_RFEEDER_READY05].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY05].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY05].IOAddr = 5031;
+	m_IOConfig[IN_RFEEDER_READY05].IOBit = 4;
+
+	m_IOConfig[IN_RFEEDER_READY06].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY06].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY06].IOAddr = 5031;
+	m_IOConfig[IN_RFEEDER_READY06].IOBit = 5;
+
+	m_IOConfig[IN_RFEEDER_READY07].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY07].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY07].IOAddr = 5031;
+	m_IOConfig[IN_RFEEDER_READY07].IOBit = 6;
+
+	m_IOConfig[IN_RFEEDER_READY08].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY08].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY08].IOAddr = 5031;
+	m_IOConfig[IN_RFEEDER_READY08].IOBit = 7;
+
+	m_IOConfig[IN_RFEEDER_READY09].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY09].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY09].IOAddr = 5032;
+	m_IOConfig[IN_RFEEDER_READY09].IOBit = 0;
+
+	m_IOConfig[IN_RFEEDER_READY10].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY10].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY10].IOAddr = 5032;
+	m_IOConfig[IN_RFEEDER_READY10].IOBit = 1;
+
+	m_IOConfig[IN_RFEEDER_READY11].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY11].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY11].IOAddr = 5032;
+	m_IOConfig[IN_RFEEDER_READY11].IOBit = 2;
+
+	m_IOConfig[IN_RFEEDER_READY12].Usage = YES_USE;
+	m_IOConfig[IN_RFEEDER_READY12].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_RFEEDER_READY12].IOAddr = 5032;
+	m_IOConfig[IN_RFEEDER_READY12].IOBit = 3;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE01].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE01].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE01].IOAddr = 5005;
+	m_IOConfig[OUT_FFEEDER_RELEASE01].IOBit = 0;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE02].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE02].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE02].IOAddr = 5005;
+	m_IOConfig[OUT_FFEEDER_RELEASE02].IOBit = 1;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE03].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE03].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE03].IOAddr = 5005;
+	m_IOConfig[OUT_FFEEDER_RELEASE03].IOBit = 2;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE04].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE04].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE04].IOAddr = 5005;
+	m_IOConfig[OUT_FFEEDER_RELEASE04].IOBit = 3;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE05].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE05].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE05].IOAddr = 5005;
+	m_IOConfig[OUT_FFEEDER_RELEASE05].IOBit = 4;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE06].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE06].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE06].IOAddr = 5005;
+	m_IOConfig[OUT_FFEEDER_RELEASE06].IOBit = 5;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE07].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE07].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE07].IOAddr = 5005;
+	m_IOConfig[OUT_FFEEDER_RELEASE07].IOBit = 6;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE08].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE08].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE08].IOAddr = 5005;
+	m_IOConfig[OUT_FFEEDER_RELEASE08].IOBit = 7;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE09].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE09].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE09].IOAddr = 5006;
+	m_IOConfig[OUT_FFEEDER_RELEASE09].IOBit = 0;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE10].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE10].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE10].IOAddr = 5006;
+	m_IOConfig[OUT_FFEEDER_RELEASE10].IOBit = 1;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE11].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE11].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE11].IOAddr = 5006;
+	m_IOConfig[OUT_FFEEDER_RELEASE11].IOBit = 2;
+
+	m_IOConfig[OUT_FFEEDER_RELEASE12].Usage = YES_USE;
+	m_IOConfig[OUT_FFEEDER_RELEASE12].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FFEEDER_RELEASE12].IOAddr = 5006;
+	m_IOConfig[OUT_FFEEDER_RELEASE12].IOBit = 3;
+
+	m_IOConfig[OUT_RFEEDER_RELEASE01].Usage = YES_USE;
+	m_IOConfig[OUT_RFEEDER_RELEASE01].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RFEEDER_RELEASE01].IOAddr = 5007;
+	m_IOConfig[OUT_RFEEDER_RELEASE01].IOBit = 0;
+
+	m_IOConfig[OUT_RFEEDER_RELEASE02].Usage = YES_USE;
+	m_IOConfig[OUT_RFEEDER_RELEASE02].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RFEEDER_RELEASE02].IOAddr = 5007;
+	m_IOConfig[OUT_RFEEDER_RELEASE02].IOBit = 1;
+
+	m_IOConfig[OUT_RFEEDER_RELEASE03].Usage = YES_USE;
+	m_IOConfig[OUT_RFEEDER_RELEASE03].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RFEEDER_RELEASE03].IOAddr = 5007;
+	m_IOConfig[OUT_RFEEDER_RELEASE03].IOBit = 2;
+
+	m_IOConfig[OUT_RFEEDER_RELEASE04].Usage = YES_USE;
+	m_IOConfig[OUT_RFEEDER_RELEASE04].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RFEEDER_RELEASE04].IOAddr = 5007;
+	m_IOConfig[OUT_RFEEDER_RELEASE04].IOBit = 3;
+
+	m_IOConfig[OUT_RFEEDER_RELEASE05].Usage = YES_USE;
+	m_IOConfig[OUT_RFEEDER_RELEASE05].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RFEEDER_RELEASE05].IOAddr = 5007;
+	m_IOConfig[OUT_RFEEDER_RELEASE05].IOBit = 4;
+
+	m_IOConfig[OUT_RFEEDER_RELEASE06].Usage = YES_USE;
+	m_IOConfig[OUT_RFEEDER_RELEASE06].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RFEEDER_RELEASE06].IOAddr = 5007;
+	m_IOConfig[OUT_RFEEDER_RELEASE06].IOBit = 5;
+
+	m_IOConfig[OUT_RFEEDER_RELEASE07].Usage = YES_USE;
+	m_IOConfig[OUT_RFEEDER_RELEASE07].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RFEEDER_RELEASE07].IOAddr = 5007;
+	m_IOConfig[OUT_RFEEDER_RELEASE07].IOBit = 6;
+
+	m_IOConfig[OUT_RFEEDER_RELEASE08].Usage = YES_USE;
+	m_IOConfig[OUT_RFEEDER_RELEASE08].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RFEEDER_RELEASE08].IOAddr = 5007;
+	m_IOConfig[OUT_RFEEDER_RELEASE08].IOBit = 7;
+
+	m_IOConfig[OUT_RFEEDER_RELEASE09].Usage = YES_USE;
+	m_IOConfig[OUT_RFEEDER_RELEASE09].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RFEEDER_RELEASE09].IOAddr = 5008;
+	m_IOConfig[OUT_RFEEDER_RELEASE09].IOBit = 0;
+
+	m_IOConfig[OUT_RFEEDER_RELEASE10].Usage = YES_USE;
+	m_IOConfig[OUT_RFEEDER_RELEASE10].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RFEEDER_RELEASE10].IOAddr = 5008;
+	m_IOConfig[OUT_RFEEDER_RELEASE10].IOBit = 1;
+
+	m_IOConfig[OUT_RFEEDER_RELEASE11].Usage = YES_USE;
+	m_IOConfig[OUT_RFEEDER_RELEASE11].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RFEEDER_RELEASE11].IOAddr = 5008;
+	m_IOConfig[OUT_RFEEDER_RELEASE11].IOBit = 2;
+
+	m_IOConfig[OUT_RFEEDER_RELEASE12].Usage = YES_USE;
+	m_IOConfig[OUT_RFEEDER_RELEASE12].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_RFEEDER_RELEASE12].IOAddr = 5008;
+	m_IOConfig[OUT_RFEEDER_RELEASE12].IOBit = 3;
+}
+
+void CPowerIO::ReadLaserIO_Weid1st()
+{
+	m_IOConfig[OUT_F1ST_LASER_ON].Usage = YES_USE;
+	m_IOConfig[OUT_F1ST_LASER_ON].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_F1ST_LASER_ON].IOAddr = 5004;
+	m_IOConfig[OUT_F1ST_LASER_ON].IOBit = 4;
+
+	m_IOConfig[OUT_R1ST_LASER_ON].Usage = YES_USE;
+	m_IOConfig[OUT_R1ST_LASER_ON].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_R1ST_LASER_ON].IOAddr = 5004;
+	m_IOConfig[OUT_R1ST_LASER_ON].IOBit = 5;
+
+	//if (GetRearFeederUse() == NO_USE)
+	{
+		m_IOConfig[OUT_FCAM1_LASER_ON].Usage = YES_USE;
+		m_IOConfig[OUT_FCAM1_LASER_ON].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_FCAM1_LASER_ON].IOAddr = 5009;
+		m_IOConfig[OUT_FCAM1_LASER_ON].IOBit = 0;
+
+		m_IOConfig[OUT_FCAM2_LASER_ON].Usage = YES_USE;
+		m_IOConfig[OUT_FCAM2_LASER_ON].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_FCAM2_LASER_ON].IOAddr = 5009;
+		m_IOConfig[OUT_FCAM2_LASER_ON].IOBit = 1;
+
+		m_IOConfig[OUT_FCAM3_LASER_ON].Usage = YES_USE;
+		m_IOConfig[OUT_FCAM3_LASER_ON].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_FCAM3_LASER_ON].IOAddr = 5009;
+		m_IOConfig[OUT_FCAM3_LASER_ON].IOBit = 2;
+
+		m_IOConfig[OUT_FCAM4_LASER_ON].Usage = YES_USE;
+		m_IOConfig[OUT_FCAM4_LASER_ON].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_FCAM4_LASER_ON].IOAddr = 5009;
+		m_IOConfig[OUT_FCAM4_LASER_ON].IOBit = 3;
+
+		m_IOConfig[OUT_FCAM5_LASER_ON].Usage = YES_USE;
+		m_IOConfig[OUT_FCAM5_LASER_ON].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_FCAM5_LASER_ON].IOAddr = 5009;
+		m_IOConfig[OUT_FCAM5_LASER_ON].IOBit = 4;
+
+		m_IOConfig[OUT_FCAM6_LASER_ON].Usage = YES_USE;
+		m_IOConfig[OUT_FCAM6_LASER_ON].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_FCAM6_LASER_ON].IOAddr = 5009;
+		m_IOConfig[OUT_FCAM6_LASER_ON].IOBit = 5;
+
+		// 20210616 HarkDo
+		m_IOConfig[OUT_RCAM1_LASER_ON].Usage = YES_USE;
+		m_IOConfig[OUT_RCAM1_LASER_ON].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_RCAM1_LASER_ON].IOAddr = 5009;
+		m_IOConfig[OUT_RCAM1_LASER_ON].IOBit = 6;
+
+		m_IOConfig[OUT_RCAM2_LASER_ON].Usage = YES_USE;
+		m_IOConfig[OUT_RCAM2_LASER_ON].HWType = IO_WMX3_DIRECT;
+		m_IOConfig[OUT_RCAM2_LASER_ON].IOAddr = 5009;
+		m_IOConfig[OUT_RCAM2_LASER_ON].IOBit = 7;
+	}
+}
+
+void CPowerIO::ReadPusherPlateIO_Weid1st()
+{
+	m_IOConfig[OUT_FCONV_WORK1_PUSH_UP].Usage = YES_USE;
+	m_IOConfig[OUT_FCONV_WORK1_PUSH_UP].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FCONV_WORK1_PUSH_UP].IOAddr = 1602;
+	m_IOConfig[OUT_FCONV_WORK1_PUSH_UP].IOBit = 1;
+
+	m_IOConfig[OUT_FCONV_WORK1_PUSH_DN].Usage = YES_USE;
+	m_IOConfig[OUT_FCONV_WORK1_PUSH_DN].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[OUT_FCONV_WORK1_PUSH_DN].IOAddr = 1602;
+	m_IOConfig[OUT_FCONV_WORK1_PUSH_DN].IOBit = 2;
+
+	m_IOConfig[IN_FCONV_WORK1_PUSH_UP].Usage = YES_USE;
+	m_IOConfig[IN_FCONV_WORK1_PUSH_UP].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FCONV_WORK1_PUSH_UP].IOAddr = 1602;
+	m_IOConfig[IN_FCONV_WORK1_PUSH_UP].IOBit = 3;
+
+	m_IOConfig[IN_FCONV_WORK1_PUSH_DN].Usage = YES_USE;
+	m_IOConfig[IN_FCONV_WORK1_PUSH_DN].HWType = IO_WMX3_DIRECT;
+	m_IOConfig[IN_FCONV_WORK1_PUSH_DN].IOAddr = 1602;
+	m_IOConfig[IN_FCONV_WORK1_PUSH_DN].IOBit = 4;
+}

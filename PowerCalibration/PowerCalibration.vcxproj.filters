@@ -1,0 +1,1186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일\MFC">
+      <UniqueIdentifier>{2969be68-3ffa-4ced-9829-5770c7798dca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\MFC">
+      <UniqueIdentifier>{6744cc28-a352-41dc-b930-b95f6b2a6b5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Global">
+      <UniqueIdentifier>{0320555c-fad4-4dc4-8a4c-1037b23712aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Decode">
+      <UniqueIdentifier>{d064a0b0-cd0c-4725-80b6-295af365ba69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Decode">
+      <UniqueIdentifier>{d00447ea-b083-465d-98e1-5649d3a17b29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Window">
+      <UniqueIdentifier>{069e4b32-9a0b-4179-8188-d1a3ea7c24d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Window">
+      <UniqueIdentifier>{7e04c969-dbc6-4855-92a2-bc6c78fc8ad6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Util">
+      <UniqueIdentifier>{1a1e4f15-0fab-45de-9dcd-10a83cc45f2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Util">
+      <UniqueIdentifier>{2d2405eb-3979-49f9-8d38-b5b6e01e8aa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Motion">
+      <UniqueIdentifier>{f130977d-e0f3-4d4c-b3a1-b2f146a9661b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Motion">
+      <UniqueIdentifier>{c8504747-9bf2-4b78-bc60-a8c61beeaae1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Common">
+      <UniqueIdentifier>{c992b8a7-ae68-4be7-a200-b05be574b547}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Socket">
+      <UniqueIdentifier>{ec96007a-9203-475e-835d-0edf5a0e32d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Socket">
+      <UniqueIdentifier>{4b27b868-479f-49a6-8290-4180db6a4516}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Gantry">
+      <UniqueIdentifier>{d29ef475-ecf6-4c6f-a6e3-3dccf0443714}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Conveyor">
+      <UniqueIdentifier>{736772c4-0dff-478e-9232-a3e90c33518e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Conveyor">
+      <UniqueIdentifier>{8d1068ed-6f12-4308-bef1-c37c4d8db638}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\IO">
+      <UniqueIdentifier>{f0c1e71c-68ed-4d38-ac55-f8364339470d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\IO">
+      <UniqueIdentifier>{e1d15790-e929-467c-af53-44e979ea5858}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Homing">
+      <UniqueIdentifier>{8d0e3d38-38fb-43ef-afaa-08c6cdc69cd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Homing">
+      <UniqueIdentifier>{8c54b930-a5e1-4d12-93fa-e6ffb68fdb4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Calibration">
+      <UniqueIdentifier>{7e3d7d2d-be45-4ee4-82f1-08b8a5a56a65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Calibration">
+      <UniqueIdentifier>{27185284-494a-40b5-a876-890b7b9735a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\File">
+      <UniqueIdentifier>{ce905279-0e35-4b9e-b385-62073b698257}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\File">
+      <UniqueIdentifier>{c65bf5af-965d-453a-b374-aa48c52117e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\File\Machine">
+      <UniqueIdentifier>{f7bb401d-5e30-4ec0-9e93-c17625afee18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\File\Run">
+      <UniqueIdentifier>{04337154-da03-4977-8c39-391cfbcc13f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\File\Machine">
+      <UniqueIdentifier>{61c62742-80c3-4c70-b1d9-9b313ac650c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\File\Run">
+      <UniqueIdentifier>{c04ae352-9a3c-495a-a658-4eb4e2c345bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\File\InsertEnd">
+      <UniqueIdentifier>{a70cf507-7b8f-4bee-8ab2-0a32bcb71f9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\File\InsertEnd">
+      <UniqueIdentifier>{7665f109-8ed7-41b6-9e4c-30e07cd8989b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Machine">
+      <UniqueIdentifier>{f2d750b2-02ef-4db0-96ed-f5dddf0c1914}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Vision">
+      <UniqueIdentifier>{aa3dad9b-ed63-4c7b-9dae-9ee5379312ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Vision">
+      <UniqueIdentifier>{0a466b43-f7ba-43dd-8a10-844eb5b21218}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Button">
+      <UniqueIdentifier>{3b167870-2c15-44c9-a904-db97bd79f981}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Button">
+      <UniqueIdentifier>{fd181400-c8fa-4a06-829b-7e1088de5d6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\TeachBox">
+      <UniqueIdentifier>{7f25494c-b7dd-490a-a3fa-24517afda579}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\TeachBox">
+      <UniqueIdentifier>{04f22167-4e96-4781-a8ae-1ebf310d3df4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Thread">
+      <UniqueIdentifier>{f074ecdd-a6e7-493f-8177-fa34394542cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Thread">
+      <UniqueIdentifier>{8f56bd15-af9d-48c1-adf1-690232b09462}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Machine">
+      <UniqueIdentifier>{5a9a0153-150f-458d-8ef0-bd4707c33a0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Serial">
+      <UniqueIdentifier>{21783aca-4826-4d73-9dbe-ba58ecb44f95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Serial">
+      <UniqueIdentifier>{70409e58-277d-4bb3-a1d5-9ceffd1cd030}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Led">
+      <UniqueIdentifier>{c543281c-93a9-4e23-978d-ed7e5aeb6ce9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Led">
+      <UniqueIdentifier>{b9a0bd3a-ab42-4eb6-8b5d-8819af898ecf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Log">
+      <UniqueIdentifier>{64280e37-c477-4fc6-a208-c1d22d0091af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Log">
+      <UniqueIdentifier>{49d1c605-3ff7-4c70-adb3-7d5e6172c4ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Reliability">
+      <UniqueIdentifier>{2b40665b-313f-422e-98c6-3b5585c0b6b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Reliability">
+      <UniqueIdentifier>{13313647-6ef8-419f-874f-835941387a66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Gantry">
+      <UniqueIdentifier>{dcb9269e-d3dd-4b89-bfbc-d0e1875a5569}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run">
+      <UniqueIdentifier>{1ab0da80-f524-477b-a10c-3f0648bc5f20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run">
+      <UniqueIdentifier>{e3aecb52-63b0-4af9-a462-bebb4c8aa5f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\Pick">
+      <UniqueIdentifier>{05ba67e1-f032-4f7e-8b87-4ffb84f637d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\Recognition">
+      <UniqueIdentifier>{697439dc-d63d-4f6b-80a7-624a397a329a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\Insert">
+      <UniqueIdentifier>{d02010d4-d2a5-41da-9283-afee86763b08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\Insert">
+      <UniqueIdentifier>{7b53fa44-bc1a-4445-bc83-fb2fba78f384}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\Recognition">
+      <UniqueIdentifier>{d03ddd95-acfe-4cbc-9271-866b97bd79a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\Pick">
+      <UniqueIdentifier>{5e33add2-871c-44f6-858e-18fed066b62c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\Component">
+      <UniqueIdentifier>{3eae82c0-4e3f-47ad-bfe6-d981093f1df5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\Component">
+      <UniqueIdentifier>{5e3fbc9c-8cb9-4394-937f-00d7cdb09f42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\Step">
+      <UniqueIdentifier>{fce8cafa-79e6-420e-89a1-d77b92fb25af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\Step">
+      <UniqueIdentifier>{af39055e-c94f-4290-ab34-ef9c2202e94e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\Mark">
+      <UniqueIdentifier>{b863f538-9ff9-4453-8c9f-fc2e1be865b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\Mark">
+      <UniqueIdentifier>{d6894af5-e00e-49e2-afc3-647671cf69bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\Avoid">
+      <UniqueIdentifier>{a3bddb1a-e5a3-4801-af5b-203d106577a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\Avoid">
+      <UniqueIdentifier>{58fce335-6034-4353-a032-b9fe80c711a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\ConfirmInsert">
+      <UniqueIdentifier>{e2fad076-a3de-411c-9540-0968b2381f82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\ConfirmInsert">
+      <UniqueIdentifier>{fe0f9eb0-793d-4574-a982-5a81050b8c42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\Forming">
+      <UniqueIdentifier>{34548ccf-78d0-4a52-b4a0-f5e3964264ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\Forming">
+      <UniqueIdentifier>{7c3b203a-13f0-4b03-943e-eab0a37692f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\Feeder">
+      <UniqueIdentifier>{a56ba344-7170-46b2-bbb7-64282ba68b63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\Feeder">
+      <UniqueIdentifier>{53d7afc0-a4bf-43af-b201-15b791e7b66a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\AutoNozzleChange">
+      <UniqueIdentifier>{4f947745-164a-40dc-ada0-a543e6df25d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\AutoNozzleChange">
+      <UniqueIdentifier>{dcbae02d-b3c5-469a-b3a1-a61637313b6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\HMI">
+      <UniqueIdentifier>{e8b76813-fb58-4641-9fa6-07b4dba22050}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\HMI">
+      <UniqueIdentifier>{5c749186-7b6d-4076-857c-a35973ea936c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\Conveyor">
+      <UniqueIdentifier>{600b8ee0-79f1-4266-838e-601aeae5ba61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\Conveyor">
+      <UniqueIdentifier>{7f4368a9-eb7c-42ac-92ff-60d0d06dd615}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\Discard">
+      <UniqueIdentifier>{8dfddce1-5468-4cea-bb4e-f6a2345400e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\Discard">
+      <UniqueIdentifier>{d5eb14f4-f6d5-42f1-b13a-a21a0a44ca6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\JobFile">
+      <UniqueIdentifier>{56c468aa-9da5-4939-99d5-e1fda7134d84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\JobFile">
+      <UniqueIdentifier>{3c1b0945-77d4-4acb-889b-fc333e1a2eb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\ReturnComponent">
+      <UniqueIdentifier>{56e3bd9e-1722-4bf1-b84e-ab199a62650a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\ReturnComponent">
+      <UniqueIdentifier>{e2baf0e3-fca1-4f9b-830d-255ef1f79532}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\MeasureHeight">
+      <UniqueIdentifier>{7104cdb6-2c75-47a4-82b9-d2dfa7ee6d4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\MeasureHeight">
+      <UniqueIdentifier>{6501d01a-7ad2-46b7-ba0e-897655b6d33c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\TowerLamp">
+      <UniqueIdentifier>{f2b27175-fe51-4b06-951a-02a5f1bb0fcc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\TowerLamp">
+      <UniqueIdentifier>{5b985db3-5ad0-4df3-86dd-2e689e9b07de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\AdvancedMotionFile">
+      <UniqueIdentifier>{ea2d9518-fef2-4359-93fb-032399a45ca8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\AdvancedMotionFile">
+      <UniqueIdentifier>{fbfd4c6b-d107-422d-bda8-d6886b8f08ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\Buzzer">
+      <UniqueIdentifier>{94595a55-361d-44c1-8719-e13d84733b67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\Buzzer">
+      <UniqueIdentifier>{4af76d17-9d3d-4716-8137-8f4f51b4574c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Global">
+      <UniqueIdentifier>{a1815071-35e8-409c-9b5e-cb317c36dc60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Run\TorqueMonitor">
+      <UniqueIdentifier>{9ca1d226-af5a-481d-b3ca-704a359fa89c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Run\TorqueMonitor">
+      <UniqueIdentifier>{1146935d-a19e-4e66-bfd3-1eb0f18b1411}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\XML">
+      <UniqueIdentifier>{47042009-a545-406c-bc74-f94b5f7d7dfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\XML">
+      <UniqueIdentifier>{c2a2dcdb-baa0-4596-8750-c767e5247e42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\MachineConfig">
+      <UniqueIdentifier>{ffe00177-68a2-4935-ba12-e3af6871783f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\MachineConfig\Calibration">
+      <UniqueIdentifier>{ce158a2a-03b1-4f27-956d-459b1785ccaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\MachineConfig\ANC">
+      <UniqueIdentifier>{73a45134-e364-4978-9dcc-b0599019af1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Cylinder">
+      <UniqueIdentifier>{f6ae02c2-3f7d-43e7-b416-c9443d516638}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Cylinder">
+      <UniqueIdentifier>{7986b8e1-3004-44f6-b73b-96379c4bb90f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PowerCalibration.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>헤더 파일\MFC</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>헤더 파일\MFC</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일\MFC</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일\MFC</Filter>
+    </ClInclude>
+    <ClInclude Include="PowerCalibrationDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerCamCalDlg.h">
+      <Filter>헤더 파일\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerHomeDlg.h">
+      <Filter>헤더 파일\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerMasterStatusDlg.h">
+      <Filter>헤더 파일\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="StackWalker.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerStackWalker.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Cwmx3Axis.h">
+      <Filter>헤더 파일\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalData.h">
+      <Filter>헤더 파일\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="CMessageQueue.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="LockDef.h">
+      <Filter>헤더 파일\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkDefine.h">
+      <Filter>헤더 파일\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Header\DataFormatAll.h">
+      <Filter>헤더 파일\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Header\Define.h">
+      <Filter>헤더 파일\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Header\DefineAll.h">
+      <Filter>헤더 파일\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Trace.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Wmx3MotorDefine.h">
+      <Filter>헤더 파일\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="CApplicationTime.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CTokenizer.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerClient.h">
+      <Filter>헤더 파일\Socket</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneralUtilClass.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CLogFileSystem.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CioStatus.h">
+      <Filter>헤더 파일\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="CHomeStatus.h">
+      <Filter>헤더 파일\Homing</Filter>
+    </ClInclude>
+    <ClInclude Include="DefineThreadLoopTime.h">
+      <Filter>헤더 파일\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Cwmx3IO.h">
+      <Filter>헤더 파일\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="CMasterMotion.h">
+      <Filter>헤더 파일\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="CSlaveMotorStatus.h">
+      <Filter>헤더 파일\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="CAnalogStatus.h">
+      <Filter>헤더 파일\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Cwmx3Motor.h">
+      <Filter>헤더 파일\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="CMachineFile.h">
+      <Filter>헤더 파일\File\Machine</Filter>
+    </ClInclude>
+    <ClInclude Include="CRunFile.h">
+      <Filter>헤더 파일\File\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="CTrayIconManager.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Cwmx3Init.h">
+      <Filter>헤더 파일\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="CInsertEndFile.h">
+      <Filter>헤더 파일\File\InsertEnd</Filter>
+    </ClInclude>
+    <ClInclude Include="CStart1D.h">
+      <Filter>헤더 파일\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="CStartOffsetCamera.h">
+      <Filter>헤더 파일\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="CStart2D.h">
+      <Filter>헤더 파일\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="CStartModuleCamera.h">
+      <Filter>헤더 파일\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="CStartHeadOffset.h">
+      <Filter>헤더 파일\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="CStartAlignOffset.h">
+      <Filter>헤더 파일\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="Cwmx3SystemParam.h">
+      <Filter>헤더 파일\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="CMachineInit.h">
+      <Filter>헤더 파일\Machine</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerVision.h">
+      <Filter>헤더 파일\Vision</Filter>
+    </ClInclude>
+    <ClInclude Include="EthernetVision.h">
+      <Filter>헤더 파일\Vision</Filter>
+    </ClInclude>
+    <ClInclude Include="vision.h">
+      <Filter>헤더 파일\Vision</Filter>
+    </ClInclude>
+    <ClInclude Include="CThreadException.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CStartCalibrationFunc.h">
+      <Filter>헤더 파일\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerTeachBox.h">
+      <Filter>헤더 파일\TeachBox</Filter>
+    </ClInclude>
+    <ClInclude Include="AxisInformation.h">
+      <Filter>헤더 파일\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="VisionData.h">
+      <Filter>헤더 파일\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerThread.h">
+      <Filter>헤더 파일\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="EventClass.h">
+      <Filter>헤더 파일\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="MutexClass.h">
+      <Filter>헤더 파일\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread.h">
+      <Filter>헤더 파일\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerCalibrationData.h">
+      <Filter>헤더 파일\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerGantry.h">
+      <Filter>헤더 파일\Gantry</Filter>
+    </ClInclude>
+    <ClInclude Include="CDiskFile.h">
+      <Filter>헤더 파일\File</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerIO.h">
+      <Filter>헤더 파일\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="DefineMotionLoopTime.h">
+      <Filter>헤더 파일\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="SerialCom.h">
+      <Filter>헤더 파일\Serial</Filter>
+    </ClInclude>
+    <ClInclude Include="CLedControl.h">
+      <Filter>헤더 파일\Led</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerConveyorData.h">
+      <Filter>헤더 파일\Conveyor</Filter>
+    </ClInclude>
+    <ClInclude Include="Cwmx3LinearIntplPos.h">
+      <Filter>헤더 파일\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerCleaner.h">
+      <Filter>헤더 파일\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="ConveyorInformation.h">
+      <Filter>헤더 파일\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="COriginSearch.h">
+      <Filter>헤더 파일\Homing</Filter>
+    </ClInclude>
+    <ClInclude Include="CPcbExist.h">
+      <Filter>헤더 파일\Conveyor</Filter>
+    </ClInclude>
+    <ClInclude Include="CReturnToEntrance.h">
+      <Filter>헤더 파일\Conveyor</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerLog.h">
+      <Filter>헤더 파일\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerReliability.h">
+      <Filter>헤더 파일\Reliability</Filter>
+    </ClInclude>
+    <ClInclude Include="CDecoding3.h">
+      <Filter>헤더 파일\Decode</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerHMI.h">
+      <Filter>헤더 파일\HMI</Filter>
+    </ClInclude>
+    <ClInclude Include="CStartZCompen.h">
+      <Filter>헤더 파일\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="CDecoding.h">
+      <Filter>헤더 파일\Decode</Filter>
+    </ClInclude>
+    <ClInclude Include="CDecoding4.h">
+      <Filter>헤더 파일\Decode</Filter>
+    </ClInclude>
+    <ClInclude Include="CLoadingToWork.h">
+      <Filter>헤더 파일\Conveyor</Filter>
+    </ClInclude>
+    <ClInclude Include="CEntryConveyor.h">
+      <Filter>헤더 파일\Run\Conveyor</Filter>
+    </ClInclude>
+    <ClInclude Include="CExitConveyor.h">
+      <Filter>헤더 파일\Run\Conveyor</Filter>
+    </ClInclude>
+    <ClInclude Include="CWorkConveyor.h">
+      <Filter>헤더 파일\Run\Conveyor</Filter>
+    </ClInclude>
+    <ClInclude Include="CSmemaControl.h">
+      <Filter>헤더 파일\Run\Conveyor</Filter>
+    </ClInclude>
+    <ClInclude Include="CSyncGantryConveyor.h">
+      <Filter>헤더 파일\Run\Conveyor</Filter>
+    </ClInclude>
+    <ClInclude Include="CDecoding2.h">
+      <Filter>헤더 파일\Decode</Filter>
+    </ClInclude>
+    <ClInclude Include="CReadJobFile.h">
+      <Filter>헤더 파일\Run\JobFile</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerMain.h">
+      <Filter>헤더 파일\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="CDiscard.h">
+      <Filter>헤더 파일\Run\Discard</Filter>
+    </ClInclude>
+    <ClInclude Include="CPick.h">
+      <Filter>헤더 파일\Run\Pick</Filter>
+    </ClInclude>
+    <ClInclude Include="CRecognition.h">
+      <Filter>헤더 파일\Run\Recognition</Filter>
+    </ClInclude>
+    <ClInclude Include="CMark.h">
+      <Filter>헤더 파일\Run\Mark</Filter>
+    </ClInclude>
+    <ClInclude Include="CInsert.h">
+      <Filter>헤더 파일\Run\Insert</Filter>
+    </ClInclude>
+    <ClInclude Include="CStep.h">
+      <Filter>헤더 파일\Run\Step</Filter>
+    </ClInclude>
+    <ClInclude Include="CFeeder.h">
+      <Filter>헤더 파일\Run\Feeder</Filter>
+    </ClInclude>
+    <ClInclude Include="CMotorPower.h">
+      <Filter>헤더 파일\Machine</Filter>
+    </ClInclude>
+    <ClInclude Include="CDecoding1.h">
+      <Filter>헤더 파일\Decode</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerConveyorControl.h">
+      <Filter>헤더 파일\Run\Conveyor</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerConveyor.h">
+      <Filter>헤더 파일\Run\Conveyor</Filter>
+    </ClInclude>
+    <ClInclude Include="CReturnComponent.h">
+      <Filter>헤더 파일\Run\ReturnComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerMainControl.h">
+      <Filter>헤더 파일\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="COutToExit.h">
+      <Filter>헤더 파일\Conveyor</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerFeederControl.h">
+      <Filter>헤더 파일\Run\Feeder</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerConveyorManualControl.h">
+      <Filter>헤더 파일\Conveyor</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerSwitchPanel.h">
+      <Filter>헤더 파일\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="CReturnToWork.h">
+      <Filter>헤더 파일\Conveyor</Filter>
+    </ClInclude>
+    <ClInclude Include="CMeasureHeight.h">
+      <Filter>헤더 파일\Run\MeasureHeight</Filter>
+    </ClInclude>
+    <ClInclude Include="CTowerLamp.h">
+      <Filter>헤더 파일\TowerLamp</Filter>
+    </ClInclude>
+    <ClInclude Include="CAdvancedMotionFile.h">
+      <Filter>헤더 파일\Run\AdvancedMotionFile</Filter>
+    </ClInclude>
+    <ClInclude Include="CMachineInformation.h">
+      <Filter>헤더 파일\Machine</Filter>
+    </ClInclude>
+    <ClInclude Include="CPowerBuzzer.h">
+      <Filter>헤더 파일\Run\Buzzer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Header\IODefine.h">
+      <Filter>헤더 파일\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="CTorqueMonitor.h">
+      <Filter>헤더 파일\Run\TorqueMonitor</Filter>
+    </ClInclude>
+    <ClInclude Include="CMotorProfile.h">
+      <Filter>헤더 파일\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalDefine.h">
+      <Filter>헤더 파일\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalIODefine.h">
+      <Filter>헤더 파일\Global</Filter>
+    </ClInclude>
+    <ClInclude Include="CRecognitionCamera6.h">
+      <Filter>헤더 파일\Run\Recognition</Filter>
+    </ClInclude>
+    <ClInclude Include="CAutoNozzleChange.h">
+      <Filter>헤더 파일\Run\AutoNozzleChange</Filter>
+    </ClInclude>
+    <ClInclude Include="CStartROriginOffset.h">
+      <Filter>헤더 파일\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="CAvoidMotion.h">
+      <Filter>헤더 파일\Run\Avoid</Filter>
+    </ClInclude>
+    <ClInclude Include="CRecognitionRetry.h">
+      <Filter>헤더 파일\Run\Recognition</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Header\DefineErrorCode.h">
+      <Filter>헤더 파일\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyxml2.h">
+      <Filter>헤더 파일\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="CMachineConfig.h">
+      <Filter>헤더 파일\File\Machine</Filter>
+    </ClInclude>
+    <ClInclude Include="CCamDropCheck.h">
+      <Filter>헤더 파일\Run\Recognition</Filter>
+    </ClInclude>
+    <ClInclude Include="CMachineFileDB.h">
+      <Filter>헤더 파일\File\Machine</Filter>
+    </ClInclude>
+    <ClInclude Include="CSqlite3File.h">
+      <Filter>헤더 파일\File</Filter>
+    </ClInclude>
+    <ClInclude Include="CRunFileConveyorDB.h">
+      <Filter>헤더 파일\File\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="CCollisionMonitoring.h">
+      <Filter>헤더 파일\Machine</Filter>
+    </ClInclude>
+    <ClInclude Include="CRecognitionDivide.h">
+      <Filter>헤더 파일\Run\Recognition</Filter>
+    </ClInclude>
+    <ClInclude Include="CylinderOscillateInfo.h">
+      <Filter>헤더 파일\Cylinder</Filter>
+    </ClInclude>
+    <ClInclude Include="Io_state_detector.h">
+      <Filter>헤더 파일\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="CylinderOscillator.h">
+      <Filter>헤더 파일\Cylinder</Filter>
+    </ClInclude>
+    <ClInclude Include="CBarcode.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CBarcodeControl.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CBarcodeFile.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CVirtualSerialControl.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CRecognitionFormingRetry.h">
+      <Filter>헤더 파일\Run\Recognition</Filter>
+    </ClInclude>
+    <ClInclude Include="CForming.h">
+      <Filter>헤더 파일\Run\Forming</Filter>
+    </ClInclude>
+    <ClInclude Include="CFormingDRBCoil.h">
+      <Filter>헤더 파일\Run\Forming</Filter>
+    </ClInclude>
+    <ClInclude Include="CTrayDumpBox.h">
+      <Filter>헤더 파일\Run\Discard</Filter>
+    </ClInclude>
+    <ClInclude Include="CLastPick.h">
+      <Filter>헤더 파일\Gantry</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="PowerCalibration.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PowerCalibrationDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일\MFC</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerCamCalDlg.cpp">
+      <Filter>소스 파일\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerHomeDlg.cpp">
+      <Filter>소스 파일\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerMasterStatusDlg.cpp">
+      <Filter>소스 파일\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="StackWalker.cpp">
+      <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerStackWalker.cpp">
+      <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Cwmx3Axis.cpp">
+      <Filter>소스 파일\Motion</Filter>
+    </ClCompile>
+    <ClCompile Include="CMessageQueue.cpp">
+      <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Trace.cpp">
+      <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalData.cpp">
+      <Filter>소스 파일\Global</Filter>
+    </ClCompile>
+    <ClCompile Include="CApplicationTime.cpp">
+      <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="CTokenizer.cpp">
+      <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerClient.cpp">
+      <Filter>소스 파일\Socket</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralUtilClass.cpp">
+      <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="CLogFileSystem.cpp">
+      <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="CioStatus.cpp">
+      <Filter>소스 파일\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="CHomeStatus.cpp">
+      <Filter>소스 파일\Homing</Filter>
+    </ClCompile>
+    <ClCompile Include="Cwmx3IO.cpp">
+      <Filter>소스 파일\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="CMasterMotion.cpp">
+      <Filter>소스 파일\Motion</Filter>
+    </ClCompile>
+    <ClCompile Include="CSlaveMotorStatus.cpp">
+      <Filter>소스 파일\Motion</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnalogStatus.cpp">
+      <Filter>소스 파일\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Cwmx3Motor.cpp">
+      <Filter>소스 파일\Motion</Filter>
+    </ClCompile>
+    <ClCompile Include="CMachineFile.cpp">
+      <Filter>소스 파일\File\Machine</Filter>
+    </ClCompile>
+    <ClCompile Include="CRunFile.cpp">
+      <Filter>소스 파일\File\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="CTrayIconManager.cpp">
+      <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Cwmx3Init.cpp">
+      <Filter>소스 파일\Motion</Filter>
+    </ClCompile>
+    <ClCompile Include="CInsertEndFile.cpp">
+      <Filter>소스 파일\File\InsertEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="CStart1D.cpp">
+      <Filter>소스 파일\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="CStartOffsetCamera.cpp">
+      <Filter>소스 파일\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="CStart2D.cpp">
+      <Filter>소스 파일\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="CStartModuleCamera.cpp">
+      <Filter>소스 파일\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="CStartAlignOffset.cpp">
+      <Filter>소스 파일\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="CStartHeadOffset.cpp">
+      <Filter>소스 파일\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="Cwmx3SystemParam.cpp">
+      <Filter>소스 파일\Motion</Filter>
+    </ClCompile>
+    <ClCompile Include="CMachineInit.cpp">
+      <Filter>소스 파일\Machine</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerVision.cpp">
+      <Filter>소스 파일\Vision</Filter>
+    </ClCompile>
+    <ClCompile Include="EthernetVision.cpp">
+      <Filter>소스 파일\Vision</Filter>
+    </ClCompile>
+    <ClCompile Include="CThreadException.cpp">
+      <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="CStartCalibrationFunc.cpp">
+      <Filter>소스 파일\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerTeachBox.cpp">
+      <Filter>소스 파일\TeachBox</Filter>
+    </ClCompile>
+    <ClCompile Include="AxisInformation.cpp">
+      <Filter>소스 파일\Global</Filter>
+    </ClCompile>
+    <ClCompile Include="VisionData.cpp">
+      <Filter>소스 파일\Global</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerThread.cpp">
+      <Filter>소스 파일\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="EventClass.cpp">
+      <Filter>소스 파일\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="MutexClass.cpp">
+      <Filter>소스 파일\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread.cpp">
+      <Filter>소스 파일\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerCalibrationData.cpp">
+      <Filter>소스 파일\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerGantry.cpp">
+      <Filter>소스 파일\Gantry</Filter>
+    </ClCompile>
+    <ClCompile Include="CDiskFile.cpp">
+      <Filter>소스 파일\File</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerIO.cpp">
+      <Filter>소스 파일\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="CLedControl.cpp">
+      <Filter>소스 파일\Led</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerConveyorData.cpp">
+      <Filter>소스 파일\Conveyor</Filter>
+    </ClCompile>
+    <ClCompile Include="Cwmx3LinearIntplPos.cpp">
+      <Filter>소스 파일\Motion</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerCleaner.cpp">
+      <Filter>소스 파일\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="COriginSearch.cpp">
+      <Filter>소스 파일\Homing</Filter>
+    </ClCompile>
+    <ClCompile Include="CPcbExist.cpp">
+      <Filter>소스 파일\Conveyor</Filter>
+    </ClCompile>
+    <ClCompile Include="CReturnToEntrance.cpp">
+      <Filter>소스 파일\Conveyor</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerLog.cpp">
+      <Filter>소스 파일\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerReliability.cpp">
+      <Filter>소스 파일\Reliability</Filter>
+    </ClCompile>
+    <ClCompile Include="CDecoding3.cpp">
+      <Filter>소스 파일\Decode</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerHMI.cpp">
+      <Filter>소스 파일\HMI</Filter>
+    </ClCompile>
+    <ClCompile Include="CStartZCompen.cpp">
+      <Filter>소스 파일\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="CDecoding.cpp">
+      <Filter>소스 파일\Decode</Filter>
+    </ClCompile>
+    <ClCompile Include="CDecoding4.cpp">
+      <Filter>소스 파일\Decode</Filter>
+    </ClCompile>
+    <ClCompile Include="SerialCom.cpp">
+      <Filter>소스 파일\Socket</Filter>
+    </ClCompile>
+    <ClCompile Include="CLoadingToWork.cpp">
+      <Filter>소스 파일\Conveyor</Filter>
+    </ClCompile>
+    <ClCompile Include="CEntryConveyor.cpp">
+      <Filter>소스 파일\Run\Conveyor</Filter>
+    </ClCompile>
+    <ClCompile Include="CExitConveyor.cpp">
+      <Filter>소스 파일\Run\Conveyor</Filter>
+    </ClCompile>
+    <ClCompile Include="CWorkConveyor.cpp">
+      <Filter>소스 파일\Run\Conveyor</Filter>
+    </ClCompile>
+    <ClCompile Include="CSmemaControl.cpp">
+      <Filter>소스 파일\Run\Conveyor</Filter>
+    </ClCompile>
+    <ClCompile Include="CSyncGantryConveyor.cpp">
+      <Filter>소스 파일\Run\Conveyor</Filter>
+    </ClCompile>
+    <ClCompile Include="CDecoding2.cpp">
+      <Filter>소스 파일\Decode</Filter>
+    </ClCompile>
+    <ClCompile Include="CReadJobFile.cpp">
+      <Filter>소스 파일\Run\JobFile</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerMain.cpp">
+      <Filter>소스 파일\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="CDiscard.cpp">
+      <Filter>소스 파일\Run\Discard</Filter>
+    </ClCompile>
+    <ClCompile Include="CPick.cpp">
+      <Filter>소스 파일\Run\Pick</Filter>
+    </ClCompile>
+    <ClCompile Include="CRecognition.cpp">
+      <Filter>소스 파일\Run\Recognition</Filter>
+    </ClCompile>
+    <ClCompile Include="CMark.cpp">
+      <Filter>소스 파일\Run\Mark</Filter>
+    </ClCompile>
+    <ClCompile Include="CInsert.cpp">
+      <Filter>소스 파일\Run\Insert</Filter>
+    </ClCompile>
+    <ClCompile Include="CStep.cpp">
+      <Filter>소스 파일\Run\Step</Filter>
+    </ClCompile>
+    <ClCompile Include="CFeeder.cpp">
+      <Filter>소스 파일\Run\Feeder</Filter>
+    </ClCompile>
+    <ClCompile Include="CMotorPower.cpp">
+      <Filter>소스 파일\Machine</Filter>
+    </ClCompile>
+    <ClCompile Include="CDecoding1.cpp">
+      <Filter>소스 파일\Decode</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerConveyorControl.cpp">
+      <Filter>소스 파일\Run\Conveyor</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerConveyor.cpp">
+      <Filter>소스 파일\Run\Conveyor</Filter>
+    </ClCompile>
+    <ClCompile Include="CReturnComponent.cpp">
+      <Filter>소스 파일\Run\ReturnComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerMainControl.cpp">
+      <Filter>소스 파일\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="COutToExit.cpp">
+      <Filter>소스 파일\Conveyor</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerFeederControl.cpp">
+      <Filter>소스 파일\Run\Feeder</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerConveyorManualControl.cpp">
+      <Filter>소스 파일\Conveyor</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerSwitchPanel.cpp">
+      <Filter>소스 파일\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="CReturnToWork.cpp">
+      <Filter>소스 파일\Conveyor</Filter>
+    </ClCompile>
+    <ClCompile Include="CMeasureHeight.cpp">
+      <Filter>소스 파일\Run\MeasureHeight</Filter>
+    </ClCompile>
+    <ClCompile Include="CTowerLamp.cpp">
+      <Filter>소스 파일\TowerLamp</Filter>
+    </ClCompile>
+    <ClCompile Include="CAdvancedMotionFile.cpp">
+      <Filter>소스 파일\Run\AdvancedMotionFile</Filter>
+    </ClCompile>
+    <ClCompile Include="CMachineInformation.cpp">
+      <Filter>소스 파일\Machine</Filter>
+    </ClCompile>
+    <ClCompile Include="CPowerBuzzer.cpp">
+      <Filter>소스 파일\Run\Buzzer</Filter>
+    </ClCompile>
+    <ClCompile Include="CTorqueMonitor.cpp">
+      <Filter>소스 파일\Run\TorqueMonitor</Filter>
+    </ClCompile>
+    <ClCompile Include="CMotorProfile.cpp">
+      <Filter>소스 파일\Motion</Filter>
+    </ClCompile>
+    <ClCompile Include="CRecognitionCamera6.cpp">
+      <Filter>소스 파일\Run\Recognition</Filter>
+    </ClCompile>
+    <ClCompile Include="CAutoNozzleChange.cpp">
+      <Filter>소스 파일\Run\AutoNozzleChange</Filter>
+    </ClCompile>
+    <ClCompile Include="CStartROriginOffset.cpp">
+      <Filter>소스 파일\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="CAvoidMotion.cpp">
+      <Filter>소스 파일\Run\Avoid</Filter>
+    </ClCompile>
+    <ClCompile Include="CRecognitionRetry.cpp">
+      <Filter>소스 파일\Run\Recognition</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml2.cpp">
+      <Filter>소스 파일\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="CMachineConfig.cpp">
+      <Filter>소스 파일\File\Machine</Filter>
+    </ClCompile>
+    <ClCompile Include="CCamDropCheck.cpp">
+      <Filter>소스 파일\Run\Recognition</Filter>
+    </ClCompile>
+    <ClCompile Include="CMachineFileDB.cpp">
+      <Filter>소스 파일\File\Machine</Filter>
+    </ClCompile>
+    <ClCompile Include="CSqlite3File.cpp">
+      <Filter>소스 파일\File</Filter>
+    </ClCompile>
+    <ClCompile Include="CRunFileConveyorDB.cpp">
+      <Filter>소스 파일\File\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="CCollisionMonitoring.cpp">
+      <Filter>소스 파일\Machine</Filter>
+    </ClCompile>
+    <ClCompile Include="CRecognitionDivide.cpp">
+      <Filter>소스 파일\Run\Recognition</Filter>
+    </ClCompile>
+    <ClCompile Include="CylinderOscillateInfo.cpp">
+      <Filter>소스 파일\Cylinder</Filter>
+    </ClCompile>
+    <ClCompile Include="CylinderOscillator.cpp">
+      <Filter>소스 파일\Cylinder</Filter>
+    </ClCompile>
+    <ClCompile Include="Io_state_detector.cpp">
+      <Filter>소스 파일\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="CBarcode.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CBarcodeControl.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CBarcodeFile.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CVirtualSerialControl.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CRecognitionFormingRetry.cpp">
+      <Filter>소스 파일\Run\Recognition</Filter>
+    </ClCompile>
+    <ClCompile Include="CForming.cpp">
+      <Filter>소스 파일\Run\Forming</Filter>
+    </ClCompile>
+    <ClCompile Include="CFormingDRBCoil.cpp">
+      <Filter>소스 파일\Run\Forming</Filter>
+    </ClCompile>
+    <ClCompile Include="CTrayDumpBox.cpp">
+      <Filter>소스 파일\Run\Discard</Filter>
+    </ClCompile>
+    <ClCompile Include="CLastPick.cpp">
+      <Filter>소스 파일\Gantry</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PowerCalibration.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\PowerCalibration.rc2">
+      <Filter>리소스 파일</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\PowerCalibration.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\PowerAutomation.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icon2.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\icon1.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\assembly-machine.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\ReleaseHistory.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="..\x64\Debug\ReleaseNote_MCS.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\MachineConfig\MachineConfig.xml">
+      <Filter>리소스 파일\MachineConfig</Filter>
+    </Xml>
+    <Xml Include="..\MachineConfig\Calibration\Calibration_ANC.xml">
+      <Filter>리소스 파일\MachineConfig\Calibration</Filter>
+    </Xml>
+    <Xml Include="..\MachineConfig\ANC\MachineConfig_ANC_Rev2.xml">
+      <Filter>리소스 파일\MachineConfig\ANC</Filter>
+    </Xml>
+    <Xml Include="..\MachineConfig\ANC\MachineConfig_ANC_Rev3.xml">
+      <Filter>리소스 파일\MachineConfig\ANC</Filter>
+    </Xml>
+    <Xml Include="..\MachineConfig\ANC\MachineConfig_ANC_Rev1.xml">
+      <Filter>리소스 파일\MachineConfig\ANC</Filter>
+    </Xml>
+  </ItemGroup>
+</Project>

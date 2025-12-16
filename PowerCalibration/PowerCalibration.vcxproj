@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{A3A73932-43C4-4C5A-A205-490CD7F5C814}</ProjectGuid>
+    <Keyword>MFCProj</Keyword>
+    <RootNamespace>PowerCalibration</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Program Files\SoftServo\WMX3_3.4u4.1\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files\SoftServo\WMX3_3.4u4.1\Lib;$(LibraryPath)</LibraryPath>
+    <TargetName>PowerMCS</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Program Files\SoftServo\WMX3\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files\SoftServo\WMX3\Lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_WINDOWS;_DEBUG;_CRTDBG_MAP_ALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AdditionalOptions>-DUSE_BEGIN_THREAD /analyze:stacksize512000 %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>sqlite3.lib;IMDll.lib;WMX3Api.lib;EcApi.lib;legacy_stdio_definitions.lib;legacy_stdio_wide_specifiers.lib;AdvancedMotionApi.lib;ApiBufferApi.lib;CompensationApi.lib;CoreMotionApi.lib;CyclicBufferApi.lib;EventApi.lib;IOApi.lib;LogApi.lib;SimuApi.lib;UserMemoryApi.lib;DbgHelp.Lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <PostBuildEvent>
+      <Command>copy $(TargetDir)\PowerMCS.exe C:\Power\i6.0\MCS</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>IMDll.lib;WMX3Api.lib;EcApi.lib;legacy_stdio_definitions.lib;legacy_stdio_wide_specifiers.lib;AdvancedMotionApi.lib;ApiBufferApi.lib;CompensationApi.lib;CoreMotionApi.lib;CyclicBufferApi.lib;EventApi.lib;IOApi.lib;LogApi.lib;SimuApi.lib;UserMemoryApi.lib;DbgHelp.Lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\Header\DataFormatAll.h" />
+    <ClInclude Include="..\..\..\..\Header\Define.h" />
+    <ClInclude Include="..\..\..\..\Header\DefineAll.h" />
+    <ClInclude Include="..\..\..\..\Header\DefineErrorCode.h" />
+    <ClInclude Include="..\..\Header\IODefine.h" />
+    <ClInclude Include="AxisInformation.h" />
+    <ClInclude Include="CAdvancedMotionFile.h" />
+    <ClInclude Include="CAnalogStatus.h" />
+    <ClInclude Include="CApplicationTime.h" />
+    <ClInclude Include="CAutoNozzleChange.h" />
+    <ClInclude Include="CAvoidMotion.h" />
+    <ClInclude Include="CBarcode.h" />
+    <ClInclude Include="CBarcodeControl.h" />
+    <ClInclude Include="CBarcodeFile.h" />
+    <ClInclude Include="CCamDropCheck.h" />
+    <ClInclude Include="CCollisionMonitoring.h" />
+    <ClInclude Include="CDecoding.h" />
+    <ClInclude Include="CDecoding1.h" />
+    <ClInclude Include="CDecoding2.h" />
+    <ClInclude Include="CDecoding3.h" />
+    <ClInclude Include="CDecoding4.h" />
+    <ClInclude Include="CDiscard.h" />
+    <ClInclude Include="CDiskFile.h" />
+    <ClInclude Include="CEntryConveyor.h" />
+    <ClInclude Include="CExitConveyor.h" />
+    <ClInclude Include="CFeeder.h" />
+    <ClInclude Include="CForming.h" />
+    <ClInclude Include="CFormingDRBCoil.h" />
+    <ClInclude Include="CHomeStatus.h" />
+    <ClInclude Include="CInsert.h" />
+    <ClInclude Include="CInsertEndFile.h" />
+    <ClInclude Include="CioStatus.h" />
+    <ClInclude Include="CLastPick.h" />
+    <ClInclude Include="CLedControl.h" />
+    <ClInclude Include="CLoadingToWork.h" />
+    <ClInclude Include="CLogFileSystem.h" />
+    <ClInclude Include="CMachineConfig.h" />
+    <ClInclude Include="CMachineFile.h" />
+    <ClInclude Include="CMachineFileDB.h" />
+    <ClInclude Include="CMachineInformation.h" />
+    <ClInclude Include="CMachineInit.h" />
+    <ClInclude Include="CMark.h" />
+    <ClInclude Include="CMasterMotion.h" />
+    <ClInclude Include="CMeasureHeight.h" />
+    <ClInclude Include="CMessageQueue.h" />
+    <ClInclude Include="CMotorPower.h" />
+    <ClInclude Include="CMotorProfile.h" />
+    <ClInclude Include="ConveyorInformation.h" />
+    <ClInclude Include="COriginSearch.h" />
+    <ClInclude Include="COutToExit.h" />
+    <ClInclude Include="CPcbExist.h" />
+    <ClInclude Include="CPick.h" />
+    <ClInclude Include="CPowerBuzzer.h" />
+    <ClInclude Include="CPowerCalibrationData.h" />
+    <ClInclude Include="CPowerCamCalDlg.h" />
+    <ClInclude Include="CPowerCleaner.h" />
+    <ClInclude Include="CPowerClient.h" />
+    <ClInclude Include="CPowerConveyor.h" />
+    <ClInclude Include="CPowerConveyorControl.h" />
+    <ClInclude Include="CPowerConveyorData.h" />
+    <ClInclude Include="CPowerConveyorManualControl.h" />
+    <ClInclude Include="CPowerFeederControl.h" />
+    <ClInclude Include="CPowerGantry.h" />
+    <ClInclude Include="CPowerHMI.h" />
+    <ClInclude Include="CPowerHomeDlg.h" />
+    <ClInclude Include="CPowerIO.h" />
+    <ClInclude Include="CPowerLog.h" />
+    <ClInclude Include="CPowerMain.h" />
+    <ClInclude Include="CPowerMainControl.h" />
+    <ClInclude Include="CPowerMasterStatusDlg.h" />
+    <ClInclude Include="CPowerReliability.h" />
+    <ClInclude Include="CPowerStackWalker.h" />
+    <ClInclude Include="CPowerSwitchPanel.h" />
+    <ClInclude Include="CPowerTeachBox.h" />
+    <ClInclude Include="CPowerThread.h" />
+    <ClInclude Include="CPowerVision.h" />
+    <ClInclude Include="CReadJobFile.h" />
+    <ClInclude Include="CRecognition.h" />
+    <ClInclude Include="CRecognitionCamera6.h" />
+    <ClInclude Include="CRecognitionDivide.h" />
+    <ClInclude Include="CRecognitionFormingRetry.h" />
+    <ClInclude Include="CRecognitionRetry.h" />
+    <ClInclude Include="CReturnComponent.h" />
+    <ClInclude Include="CReturnToEntrance.h" />
+    <ClInclude Include="CReturnToWork.h" />
+    <ClInclude Include="CRunFile.h" />
+    <ClInclude Include="CRunFileConveyorDB.h" />
+    <ClInclude Include="CSlaveMotorStatus.h" />
+    <ClInclude Include="CSmemaControl.h" />
+    <ClInclude Include="CSqlite3File.h" />
+    <ClInclude Include="CStart1D.h" />
+    <ClInclude Include="CStart2D.h" />
+    <ClInclude Include="CStartAlignOffset.h" />
+    <ClInclude Include="CStartCalibrationFunc.h" />
+    <ClInclude Include="CStartHeadOffset.h" />
+    <ClInclude Include="CStartModuleCamera.h" />
+    <ClInclude Include="CStartOffsetCamera.h" />
+    <ClInclude Include="CStartROriginOffset.h" />
+    <ClInclude Include="CStartZCompen.h" />
+    <ClInclude Include="CStep.h" />
+    <ClInclude Include="CSyncGantryConveyor.h" />
+    <ClInclude Include="CThreadException.h" />
+    <ClInclude Include="CTokenizer.h" />
+    <ClInclude Include="CTorqueMonitor.h" />
+    <ClInclude Include="CTowerLamp.h" />
+    <ClInclude Include="CTrayDumpBox.h" />
+    <ClInclude Include="CTrayIconManager.h" />
+    <ClInclude Include="CVirtualSerialControl.h" />
+    <ClInclude Include="Cwmx3Axis.h" />
+    <ClInclude Include="Cwmx3LinearIntplPos.h" />
+    <ClInclude Include="Cwmx3SystemParam.h" />
+    <ClInclude Include="Cwmx3IO.h" />
+    <ClInclude Include="Cwmx3Init.h" />
+    <ClInclude Include="Cwmx3Motor.h" />
+    <ClInclude Include="CWorkConveyor.h" />
+    <ClInclude Include="DefineMotionLoopTime.h" />
+    <ClInclude Include="DefineThreadLoopTime.h" />
+    <ClInclude Include="EthernetVision.h" />
+    <ClInclude Include="EventClass.h" />
+    <ClInclude Include="CylinderOscillateInfo.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="GeneralUtilClass.h" />
+    <ClInclude Include="GlobalData.h" />
+    <ClInclude Include="GlobalDefine.h" />
+    <ClInclude Include="GlobalIODefine.h" />
+    <ClInclude Include="Io_state_detector.h" />
+    <ClInclude Include="LockDef.h" />
+    <ClInclude Include="MutexClass.h" />
+    <ClInclude Include="SerialCom.h" />
+    <ClInclude Include="Thread.h" />
+    <ClInclude Include="tinyxml2.h" />
+    <ClInclude Include="vision.h" />
+    <ClInclude Include="VisionData.h" />
+    <ClInclude Include="CylinderOscillator.h" />
+    <ClInclude Include="Wmx3MotorDefine.h" />
+    <ClInclude Include="NetworkDefine.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="PowerCalibration.h" />
+    <ClInclude Include="PowerCalibrationDlg.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="StackWalker.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Trace.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AxisInformation.cpp" />
+    <ClCompile Include="CAdvancedMotionFile.cpp" />
+    <ClCompile Include="CAnalogStatus.cpp" />
+    <ClCompile Include="CApplicationTime.cpp" />
+    <ClCompile Include="CAutoNozzleChange.cpp" />
+    <ClCompile Include="CAvoidMotion.cpp" />
+    <ClCompile Include="CBarcode.cpp" />
+    <ClCompile Include="CBarcodeControl.cpp" />
+    <ClCompile Include="CBarcodeFile.cpp" />
+    <ClCompile Include="CCamDropCheck.cpp" />
+    <ClCompile Include="CCollisionMonitoring.cpp" />
+    <ClCompile Include="CDecoding.cpp" />
+    <ClCompile Include="CDecoding1.cpp" />
+    <ClCompile Include="CDecoding2.cpp" />
+    <ClCompile Include="CDecoding3.cpp" />
+    <ClCompile Include="CDecoding4.cpp" />
+    <ClCompile Include="CDiscard.cpp" />
+    <ClCompile Include="CDiskFile.cpp" />
+    <ClCompile Include="CEntryConveyor.cpp" />
+    <ClCompile Include="CExitConveyor.cpp" />
+    <ClCompile Include="CFeeder.cpp" />
+    <ClCompile Include="CForming.cpp" />
+    <ClCompile Include="CFormingDRBCoil.cpp" />
+    <ClCompile Include="CHomeStatus.cpp" />
+    <ClCompile Include="CInsert.cpp" />
+    <ClCompile Include="CInsertEndFile.cpp" />
+    <ClCompile Include="CioStatus.cpp" />
+    <ClCompile Include="CLastPick.cpp" />
+    <ClCompile Include="CLedControl.cpp" />
+    <ClCompile Include="CLoadingToWork.cpp" />
+    <ClCompile Include="CLogFileSystem.cpp" />
+    <ClCompile Include="CMachineConfig.cpp" />
+    <ClCompile Include="CMachineFile.cpp" />
+    <ClCompile Include="CMachineFileDB.cpp" />
+    <ClCompile Include="CMachineInformation.cpp" />
+    <ClCompile Include="CMachineInit.cpp" />
+    <ClCompile Include="CMark.cpp" />
+    <ClCompile Include="CMasterMotion.cpp" />
+    <ClCompile Include="CMeasureHeight.cpp" />
+    <ClCompile Include="CMessageQueue.cpp" />
+    <ClCompile Include="CMotorPower.cpp" />
+    <ClCompile Include="CMotorProfile.cpp" />
+    <ClCompile Include="COriginSearch.cpp" />
+    <ClCompile Include="COutToExit.cpp" />
+    <ClCompile Include="CPcbExist.cpp" />
+    <ClCompile Include="CPick.cpp" />
+    <ClCompile Include="CPowerBuzzer.cpp" />
+    <ClCompile Include="CPowerCalibrationData.cpp" />
+    <ClCompile Include="CPowerCamCalDlg.cpp" />
+    <ClCompile Include="CPowerCleaner.cpp" />
+    <ClCompile Include="CPowerClient.cpp" />
+    <ClCompile Include="CPowerConveyor.cpp" />
+    <ClCompile Include="CPowerConveyorControl.cpp" />
+    <ClCompile Include="CPowerConveyorData.cpp" />
+    <ClCompile Include="CPowerConveyorManualControl.cpp" />
+    <ClCompile Include="CPowerFeederControl.cpp" />
+    <ClCompile Include="CPowerGantry.cpp" />
+    <ClCompile Include="CPowerHMI.cpp" />
+    <ClCompile Include="CPowerHomeDlg.cpp" />
+    <ClCompile Include="CPowerIO.cpp" />
+    <ClCompile Include="CPowerLog.cpp" />
+    <ClCompile Include="CPowerMain.cpp" />
+    <ClCompile Include="CPowerMainControl.cpp" />
+    <ClCompile Include="CPowerMasterStatusDlg.cpp" />
+    <ClCompile Include="CPowerReliability.cpp" />
+    <ClCompile Include="CPowerStackWalker.cpp" />
+    <ClCompile Include="CPowerSwitchPanel.cpp" />
+    <ClCompile Include="CPowerTeachBox.cpp" />
+    <ClCompile Include="CPowerThread.cpp" />
+    <ClCompile Include="CPowerVision.cpp" />
+    <ClCompile Include="CReadJobFile.cpp" />
+    <ClCompile Include="CRecognition.cpp" />
+    <ClCompile Include="CRecognitionCamera6.cpp" />
+    <ClCompile Include="CRecognitionDivide.cpp" />
+    <ClCompile Include="CRecognitionFormingRetry.cpp" />
+    <ClCompile Include="CRecognitionRetry.cpp" />
+    <ClCompile Include="CReturnComponent.cpp" />
+    <ClCompile Include="CReturnToEntrance.cpp" />
+    <ClCompile Include="CReturnToWork.cpp" />
+    <ClCompile Include="CRunFile.cpp" />
+    <ClCompile Include="CRunFileConveyorDB.cpp" />
+    <ClCompile Include="CSlaveMotorStatus.cpp" />
+    <ClCompile Include="CSmemaControl.cpp" />
+    <ClCompile Include="CSqlite3File.cpp" />
+    <ClCompile Include="CStart1D.cpp" />
+    <ClCompile Include="CStart2D.cpp" />
+    <ClCompile Include="CStartAlignOffset.cpp" />
+    <ClCompile Include="CStartCalibrationFunc.cpp" />
+    <ClCompile Include="CStartHeadOffset.cpp" />
+    <ClCompile Include="CStartModuleCamera.cpp" />
+    <ClCompile Include="CStartOffsetCamera.cpp" />
+    <ClCompile Include="CStartROriginOffset.cpp" />
+    <ClCompile Include="CStartZCompen.cpp" />
+    <ClCompile Include="CStep.cpp" />
+    <ClCompile Include="CSyncGantryConveyor.cpp" />
+    <ClCompile Include="CThreadException.cpp" />
+    <ClCompile Include="CTokenizer.cpp" />
+    <ClCompile Include="CTorqueMonitor.cpp" />
+    <ClCompile Include="CTowerLamp.cpp" />
+    <ClCompile Include="CTrayDumpBox.cpp" />
+    <ClCompile Include="CTrayIconManager.cpp" />
+    <ClCompile Include="CVirtualSerialControl.cpp" />
+    <ClCompile Include="Cwmx3Axis.cpp" />
+    <ClCompile Include="Cwmx3LinearIntplPos.cpp" />
+    <ClCompile Include="Cwmx3SystemParam.cpp" />
+    <ClCompile Include="Cwmx3IO.cpp" />
+    <ClCompile Include="Cwmx3Init.cpp" />
+    <ClCompile Include="Cwmx3Motor.cpp" />
+    <ClCompile Include="CWorkConveyor.cpp" />
+    <ClCompile Include="EthernetVision.cpp" />
+    <ClCompile Include="EventClass.cpp" />
+    <ClCompile Include="CylinderOscillateInfo.cpp" />
+    <ClCompile Include="GeneralUtilClass.cpp" />
+    <ClCompile Include="GlobalData.cpp" />
+    <ClCompile Include="Io_state_detector.cpp" />
+    <ClCompile Include="MutexClass.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="PowerCalibration.cpp" />
+    <ClCompile Include="PowerCalibrationDlg.cpp" />
+    <ClCompile Include="SerialCom.cpp" />
+    <ClCompile Include="StackWalker.cpp" />
+    <ClCompile Include="Thread.cpp" />
+    <ClCompile Include="tinyxml2.cpp" />
+    <ClCompile Include="Trace.cpp" />
+    <ClCompile Include="VisionData.cpp" />
+    <ClCompile Include="CylinderOscillator.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PowerCalibration.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\PowerCalibration.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\assembly-machine.png" />
+    <Image Include="res\icon1.ico" />
+    <Image Include="res\icon2.ico" />
+    <Image Include="res\PowerAutomation.ico" />
+    <Image Include="res\PowerCalibration.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\x64\Debug\ReleaseNote_MCS.txt" />
+    <Text Include="res\ReleaseHistory.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\MachineConfig\ANC\MachineConfig_ANC_Rev1.xml" />
+    <Xml Include="..\MachineConfig\ANC\MachineConfig_ANC_Rev2.xml" />
+    <Xml Include="..\MachineConfig\ANC\MachineConfig_ANC_Rev3.xml" />
+    <Xml Include="..\MachineConfig\Calibration\Calibration_ANC.xml" />
+    <Xml Include="..\MachineConfig\MachineConfig.xml" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
